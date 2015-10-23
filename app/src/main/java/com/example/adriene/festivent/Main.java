@@ -88,10 +88,16 @@ public class Main extends AppCompatActivity
 
         if (id == R.id.nav_map) {
             Toast.makeText(Main.this, "Show Map Touched", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(Main.this, map.class);
+            startActivity(i);
         } else if (id == R.id.nav_list) {
             Toast.makeText(Main.this, "Show List Touched", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_filler1) {
+            Intent i = new Intent(Main.this, List.class);
+            startActivity(i);
+        } else if (id == R.id.nav_settings) {
             Toast.makeText(Main.this, "filler1 touched", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(Main.this, Settings.class);
+            startActivity(i);
         } else if (id == R.id.nav_filler2) {
             Toast.makeText(Main.this, "filler2 Touched", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
