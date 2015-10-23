@@ -86,18 +86,18 @@ public class Main extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        if (id == R.id.nav_map) {
+            Toast.makeText(Main.this, "Show Map Touched", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_list) {
+            Toast.makeText(Main.this, "Show List Touched", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_filler1) {
+            Toast.makeText(Main.this, "filler1 touched", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_filler2) {
+            Toast.makeText(Main.this, "filler2 Touched", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
-
+            Toast.makeText(Main.this, "share Touched", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
-
+            Toast.makeText(Main.this, "send touched", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

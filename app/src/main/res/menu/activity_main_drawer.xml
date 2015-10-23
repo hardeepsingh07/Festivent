@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
+        <item android:id="@+id/nav_map" android:icon="@android:drawable/ic_menu_mapmode"
             android:title="Show Map" />
-        <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
+        <item android:id="@+id/nav_list" android:icon="@android:drawable/ic_menu_gallery"
             android:title="Show List" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
+        <item android:id="@+id/nav_filler1" android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Filler" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
+        <item android:id="@+id/nav_filler2" android:icon="@android:drawable/ic_menu_manage"
             android:title="Filler" />
     </group>
 
