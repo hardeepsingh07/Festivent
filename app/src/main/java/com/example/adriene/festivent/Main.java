@@ -92,7 +92,7 @@ public class Main extends AppCompatActivity
             startActivity(i);
         } else if (id == R.id.nav_list) {
             Toast.makeText(Main.this, "Show List Touched", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(Main.this, List.class);
+            Intent i = new Intent(Main.this, list2.class);
             startActivity(i);
         } else if (id == R.id.nav_settings) {
             Toast.makeText(Main.this, "filler1 touched", Toast.LENGTH_SHORT).show();

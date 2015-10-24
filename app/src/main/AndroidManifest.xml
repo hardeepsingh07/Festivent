@@ -44,13 +44,10 @@
             android:label="@string/title_activity_map" >
         </activity>
         <activity
-            android:name=".List"
-            android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity android:name=".list2" >
         </activity>
     </application>
 
