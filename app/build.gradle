@@ -26,6 +26,4 @@ dependencies {
     compile 'com.android.support:design:23.1.0'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.android.support:support-v4:23.1.0'
-    compile 'net.sf.sprockets:sprockets-android:2.6.0'
-
 }
