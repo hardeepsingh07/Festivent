@@ -9,4 +9,37 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:showIn="@layout/app_bar_main"
     tools:context="com.example.adriene.festivent.Main">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Festivent"
+        android:id="@+id/mainTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:typeface="serif"
+        android:textStyle="normal"
+        android:textSize="30dp"
+        android:textColor="#303F9F" />
+
+     <net.sf.sprockets.widget.GooglePlaceAutoComplete
+        xmlns:sprockets="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        sprockets:types="(cities)"
+         android:layout_below="@+id/mSearch"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:text="Search"
+        android:id="@+id/mSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="49dp"
+        android:typeface="serif"
+        android:textColor="#ffffff"
+        android:background="#3F51B5" />
 </RelativeLayout>
