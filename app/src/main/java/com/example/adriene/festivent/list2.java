@@ -22,7 +22,7 @@ public class list2 extends AppCompatActivity {
         EventInfo[] events = {new EventInfo("Event 1"), new EventInfo("Event 2"), new EventInfo("Event 3")};
 
 
-        ListAdapter listAdapter = new ArrayAdapter<EventInfo>(this,android.R.layout.simple_list_item_1,events);
+        ListAdapter listAdapter = new MyCustomAdapter(this,events);
         ListView theListView = (ListView) findViewById(R.id.listView);
         theListView.setAdapter(listAdapter);
 
