@@ -1,6 +1,10 @@
 package com.example.adriene.festivent;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Geocoder;
+import android.location.Address;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,11 +17,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static AutoCompleteTextView ac;
+    public static Button search;
+    public static FloatingActionButton fab;
+    public static String result;
+    public double latitude, longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +39,9 @@ public class Main extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        ac = (AutoCompleteTextView) findViewById(R.id.ac);
+        search = (Button) findViewById(R.id.sMain);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,6 +51,32 @@ public class Main extends AppCompatActivity
                         Toast.makeText(Main.this, "It Works!", Toast.LENGTH_SHORT).show();
                     }
                 }).show();
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationToLL(result);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(Main.this);
+                dialog.setTitle("View");
+                dialog.setMessage("How would you like to see result?");
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("Map View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(Main.this, map.class);
+                        startActivity(i);
+                    }
+                });
+                dialog.setNegativeButton("List View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(Main.this, list2.class);
+                        startActivity(i);
+                    }
+                });
+                dialog.create().show();
             }
         });
 
@@ -109,5 +151,18 @@ public class Main extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void locationToLL(String input) {
+       Geocoder coder = new Geocoder(Main.this);
+        List<Address> address;
+        try {
+            address = coder.getFromLocationName(input, 5);
+            Address location = address.get(0);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        } catch (Exception e) {
+            Toast.makeText(Main.this, "Error have occured in name conversion", Toast.LENGTH_SHORT).show();
+        }
     }
 }

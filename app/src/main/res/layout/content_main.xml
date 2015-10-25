@@ -9,4 +9,47 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior" tools:showIn="@layout/app_bar_main"
     tools:context="com.example.adriene.festivent.Main">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Festivent"
+        android:id="@+id/mTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:typeface="serif"
+        android:textStyle="normal"
+        android:textColor="#303F9F"
+        android:textSize="30dp" />
+
+    <AutoCompleteTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ac"
+        android:layout_below="@+id/mTitle"
+        android:layout_marginTop="33dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="#303F9F"
+        android:textSize="17dp"
+        android:typeface="serif"
+        android:textStyle="normal"
+        android:hint="Search a location..."
+        android:textColorHint="#393939" />
+
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:text="Search"
+        android:id="@+id/sMain"
+        android:layout_below="@+id/ac"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="41dp"
+        android:textStyle="normal"
+        android:typeface="serif"
+        android:textSize="17dp"
+        android:textColor="#FFFFFF"
+        android:background="#3F51B5" />
 </RelativeLayout>
