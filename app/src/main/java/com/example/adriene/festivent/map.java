@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.provider.*;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -36,6 +38,9 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        Intent i = getIntent();
+        latitude = i.getDoubleExtra("latitude", latitude);
+        longitude = i.getDoubleExtra("longitude", longitude);
         mFab = (FloatingActionButton) findViewById(R.id.mfab);
         pBar = (ProgressBar) findViewById(R.id.pMap);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

@@ -3,9 +3,11 @@ package com.example.adriene.festivent;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Address;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ public class Main extends AppCompatActivity
     public static FloatingActionButton fab;
     public static String result;
     public double latitude, longitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,17 @@ public class Main extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.fab);
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (Button) findViewById(R.id.sMain);
+        ac.setAdapter(new placeACAdapter(Main.this, R.layout.aclist));
+        ac.setDropDownHeight(5);
+        ac.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String description = (String) parent.getItemAtPosition(position);
+                Toast.makeText(Main.this, description, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +81,8 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(Main.this, map.class);
+                        i.putExtra("latitude", latitude);
+                        i.putExtra("longitude", longitude);
                         startActivity(i);
                     }
                 });
@@ -73,6 +90,8 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(Main.this, list2.class);
+                        i.putExtra("latitude", latitude);
+                        i.putExtra("longitude", longitude);
                         startActivity(i);
                     }
                 });

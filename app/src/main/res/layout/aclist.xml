@@ -5,7 +5,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
-        android:id="@+id/textView2"
+        android:id="@+id/acAdapterText"
         android:layout_weight="0.06"
         android:typeface="serif"
         android:textSize="15dp"
