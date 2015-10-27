@@ -46,7 +46,15 @@ public class Main extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.fab);
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (Button) findViewById(R.id.sMain);
-
+        ac.setAdapter(new placeACAdapter(Main.this, R.layout.aclist));
+        ac.setDropDownHeight(5);
+        ac.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String description = (String) parent.getItemAtPosition(position);
+                Toast.makeText(Main.this, description, Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         fab.setOnClickListener(new View.OnClickListener() {
