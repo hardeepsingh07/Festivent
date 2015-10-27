@@ -46,10 +46,10 @@
         android:id="@+id/sMain"
         android:layout_below="@+id/ac"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/recbutton"
         android:layout_marginTop="41dp"
         android:textStyle="normal"
         android:typeface="serif"
         android:textSize="17dp"
-        android:textColor="#FFFFFF"
-        android:background="#3F51B5" />
+        android:textColor="#FFFFFF" />
 </RelativeLayout>
