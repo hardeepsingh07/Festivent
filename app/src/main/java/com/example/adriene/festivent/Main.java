@@ -1,11 +1,13 @@
 package com.example.adriene.festivent;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.location.Geocoder;
-import android.location.Address;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +33,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
@@ -42,15 +45,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static AutoCompleteTextView ac;
     public static Button search;
     public static FloatingActionButton fab;
-    public static String result;
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
     public double latitude, longitude;
+    public String wordLocation;
+    public GPS gps;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
@@ -74,20 +79,42 @@ public class Main extends AppCompatActivity
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (Button) findViewById(R.id.sMain);
 
-        ac.setOnItemClickListener(mAutocompleteClickListener);
+        ac.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final AutocompletePrediction item = mAdapter.getItem(position);
+                final String placeId = item.getPlaceId();
+                final CharSequence primaryText = item.getPrimaryText(null);
+
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                        .getPlaceById(mGoogleApiClient, placeId);
+                placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+
+                Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // call adapter and set to AutoCompleteView
         mAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, BOUNDS,
-                null);
+                        null);
         ac.setAdapter(mAdapter);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Click Me For Test", Snackbar.LENGTH_LONG).setAction("Open", new View.OnClickListener() {
+                Snackbar.make(view, "Enable GPS", Snackbar.LENGTH_LONG).setAction("Lets Go!", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(Main.this, "It Works!", Toast.LENGTH_SHORT).show();
+                        gps = new GPS(Main.this);
+                        if(gps.canGetLocation) {
+                            latitude = gps.getLatitude();
+                            longitude = gps.getLongitude();
+                            wordLocation = gps.convertGEO(latitude, longitude);
+                            ac.setText(wordLocation);
+                        } else {
+                            gps.showSettingsAlert();
+                        }
                     }
                 }).show();
             }
@@ -212,41 +239,27 @@ public class Main extends AppCompatActivity
         }
     };
 
-
+    //Take care of the results
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
-                // Request did not complete successfully
                 places.release();
                 return;
             }
-            // Get the Place object from the buffer.
             final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-            Toast.makeText(Main.this, formatPlaceDetails(getResources(), place.getName(),
-                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-                    place.getWebsiteUri()), Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(Main.this, place.getLatLng().latitude + " | " + place.getLatLng().longitude, Toast.LENGTH_SHORT).show();
             places.release();
         }
     };
 
-    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
-                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
-        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
-                websiteUri));
-
-    }
+    //Handle Connection Failed
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
-        Log.e(null,"onConnectionFailed: ConnectionResult.getErrorCode() = "
-                + connectionResult.getErrorCode());
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
     }
+
 }
