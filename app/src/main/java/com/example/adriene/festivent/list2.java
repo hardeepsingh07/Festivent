@@ -36,42 +36,6 @@ public class list2 extends AppCompatActivity {
             latitude = 0.0;
             longitude = 0.0;
         }
-        AlertDialog dialog;
-        final CharSequence[] items = {" Remember my choice "};
-        // arraylist to keep the selected items
-        final ArrayList seletedItems=new ArrayList();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select The Difficulty Level");
-        builder.setMultiChoiceItems(items, null,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected,
-                                        boolean isChecked) {
-                        if (isChecked) {
-
-                            seletedItems.add(indexSelected);
-                        } else if (seletedItems.contains(indexSelected)) {
-                            seletedItems.remove(Integer.valueOf(indexSelected));
-                        }
-                    }
-                })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-
-        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
-        dialog.show();
-
 
         Toast.makeText(list2.this, latitude + "|" + longitude,Toast.LENGTH_SHORT).show();
 
