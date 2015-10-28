@@ -45,6 +45,7 @@ public class Main extends AppCompatActivity
     public double latitude, longitude;
     public String wordLocation;
     public GPS gps;
+    public boolean trigger = false;
     public SharedPreferences prefs;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
@@ -112,33 +113,14 @@ public class Main extends AppCompatActivity
         });
 
         search.setOnClickListener(new View.OnClickListener() {
-            final CharSequence[] option = {"Remeber my Choice?"};
             @Override
             public void onClick(View v) {
                 //put data in prefs
                 prefs.edit().putString("latitude", latitude + "").commit();
                 prefs.edit().putString("longitude", longitude + "").commit();
 
-                //Ask for type of view
-                AlertDialog.Builder dialog = new AlertDialog.Builder(Main.this);
-                dialog.setTitle("View");
-                dialog.setMessage("How would you like to see result?");
-                dialog.setCancelable(true);
-                dialog.setPositiveButton("Map View", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                       Intent i = new Intent(Main.this, map.class);
-                        startActivity(i);
-                    }
-                });
-                dialog.setNegativeButton("List View", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(Main.this, list2.class);
-                        startActivity(i);
-                    }
-                });
-                dialog.create().show();
+                //show dialog to pick activity to view results
+                switchDialog();
             }
         });
 
@@ -151,6 +133,8 @@ public class Main extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -254,6 +238,56 @@ public class Main extends AppCompatActivity
         Toast.makeText(this,
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    public void switchDialog() {
+        Intent i;
+        //Ask for type of view
+        switch(prefs.getString("dialogChoice", "")) {
+            case "map":
+                i = new Intent(Main.this, map.class);
+                startActivity(i);
+                break;
+            case "list":
+                i = new Intent(Main.this, list2.class);
+                startActivity(i);
+                break;
+            case "":
+                AlertDialog.Builder dialog = new AlertDialog.Builder(Main.this);
+                dialog.setTitle("How would you like to see your result?");
+                dialog.setMultiChoiceItems(new CharSequence[]{"Remember my choice!"}, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int indexSelected,
+                                                boolean isChecked) {
+                                if (isChecked) {
+                                    trigger = true;
+                                }
+                            }
+                        })
+                        .setPositiveButton("Map", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (trigger) {
+                                    prefs.edit().putString("dialogChoice", "map").commit();
+                                }
+                                Intent i = new Intent(Main.this, map.class);
+                                startActivity(i);
+                            }
+                        })
+                        .setNegativeButton("List", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (trigger) {
+                                    prefs.edit().putString("dialogChoice", "list").commit();
+                                }
+                                Intent i = new Intent(Main.this, list2.class);
+                                startActivity(i);
+                            }
+                        });
+                dialog.create().show();
+                break;
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.adriene.festivent;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.adriene.festivent.EventInfo;
+
+import java.util.ArrayList;
 
 public class list2 extends AppCompatActivity {
 
@@ -32,6 +36,42 @@ public class list2 extends AppCompatActivity {
             latitude = 0.0;
             longitude = 0.0;
         }
+        AlertDialog dialog;
+        final CharSequence[] items = {" Remember my choice "};
+        // arraylist to keep the selected items
+        final ArrayList seletedItems=new ArrayList();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select The Difficulty Level");
+        builder.setMultiChoiceItems(items, null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected,
+                                        boolean isChecked) {
+                        if (isChecked) {
+
+                            seletedItems.add(indexSelected);
+                        } else if (seletedItems.contains(indexSelected)) {
+                            seletedItems.remove(Integer.valueOf(indexSelected));
+                        }
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
+        dialog.show();
+
 
         Toast.makeText(list2.this, latitude + "|" + longitude,Toast.LENGTH_SHORT).show();
 

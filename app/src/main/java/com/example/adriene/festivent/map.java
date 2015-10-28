@@ -56,7 +56,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(map.this, "Button Under Construction", Toast.LENGTH_SHORT).show();
+                Toast.makeText(map.this, "Button under construction", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -70,9 +70,10 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
+        latlng = new LatLng(latitude, longitude);
         mMap.setOnMapLoadedCallback(callback);
-
     }
+
 
     //Animate the Map
     public GoogleMap.OnMapLoadedCallback callback = new GoogleMap.OnMapLoadedCallback() {
