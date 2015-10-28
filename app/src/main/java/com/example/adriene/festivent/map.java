@@ -29,30 +29,36 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private FloatingActionButton mFab;
     private ProgressBar pBar;
-    public double latitude, longitude;
+    public double latitude = 0.0, longitude = 0.0;
     private LatLng latlng;
     public LocationManager locationManager;
+    public GPS gps;
+    public SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        Intent i = getIntent();
-        latitude = i.getDoubleExtra("latitude", latitude);
-        longitude = i.getDoubleExtra("longitude", longitude);
         mFab = (FloatingActionButton) findViewById(R.id.mfab);
         pBar = (ProgressBar) findViewById(R.id.pMap);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(map.this);
 
+        //get Shared Preferences
+        try {
+            latitude = Double.parseDouble(prefs.getString("latitude", ""));
+            longitude = Double.parseDouble(prefs.getString("longitude", ""));
+        } catch (Exception e) {
+            latitude = 0.0;
+            longitude = 0.0;
+        }
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkGPS();
-                pBar.setVisibility(View.VISIBLE);
+                Toast.makeText(map.this, "Button Under Construction", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -60,66 +66,35 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMyLocationChangeListener(update);
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMapLoadedCallback(callback);
+
     }
 
-    public GoogleMap.OnMyLocationChangeListener update = new GoogleMap.OnMyLocationChangeListener() {
+    //Animate the Map
+    public GoogleMap.OnMapLoadedCallback callback = new GoogleMap.OnMapLoadedCallback() {
+        @Override
+        public void onMapLoaded() {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
+            mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
+            pBar.setVisibility(View.GONE);
+        }
+    };
 
+ /*
+  //Watch location and follows it, not needed it right now
+  public GoogleMap.OnMyLocationChangeListener update = new GoogleMap.OnMyLocationChangeListener() {
         @Override
         public void onMyLocationChange(Location location) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             latlng = new LatLng(latitude, longitude);
-            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                @Override
-                public void onMapLoaded() {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-                    mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
-                    pBar.setVisibility(View.GONE);
-                }
-            });
-
+            mMap.setOnMapLoadedCallback(callback);
         }
     };
+*/
 
-    public void checkGPS() {
-        if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Toast.makeText(map.this, "GPS Confirmed On!", Toast.LENGTH_LONG).show();
-        } else {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(map.this);
-            dialog.setTitle("GPS");
-            dialog.setMessage("GPS is disabled in your device, Enable it?");
-            dialog.setCancelable(true);
-            dialog.setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent settingsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(settingsIntent);
-                }
-            });
-            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(map.this, "GPS must be turned on for location", Toast.LENGTH_LONG).show();
-                    Intent i = new Intent(map.this, Main.class);
-                    startActivity(i);
-                    finish();
-                }
-            });
-            dialog.create().show();
-        }
-    }
 }

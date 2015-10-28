@@ -1,20 +1,13 @@
 package com.example.adriene.festivent;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
-import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,16 +26,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-
-import java.io.IOException;
-import java.util.List;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -56,6 +45,7 @@ public class Main extends AppCompatActivity
     public double latitude, longitude;
     public String wordLocation;
     public GPS gps;
+    public SharedPreferences prefs;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
@@ -64,6 +54,8 @@ public class Main extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //get preference manager
+        prefs = PreferenceManager.getDefaultSharedPreferences(Main.this);
         //setup place lookup client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -108,9 +100,8 @@ public class Main extends AppCompatActivity
                     public void onClick(View v) {
                         gps = new GPS(Main.this);
                         if(gps.canGetLocation) {
-                            latitude = gps.getLatitude();
-                            longitude = gps.getLongitude();
-                            wordLocation = gps.convertGEO(latitude, longitude);
+                            //get latitude and longitude then turn into address for AutoComplete Text
+                            wordLocation = gps.convertGEO(gps.getLatitude(), gps.getLongitude());
                             ac.setText(wordLocation);
                         } else {
                             gps.showSettingsAlert();
@@ -121,8 +112,14 @@ public class Main extends AppCompatActivity
         });
 
         search.setOnClickListener(new View.OnClickListener() {
+            final CharSequence[] option = {"Remeber my Choice?"};
             @Override
             public void onClick(View v) {
+                //put data in prefs
+                prefs.edit().putString("latitude", latitude + "").commit();
+                prefs.edit().putString("longitude", longitude + "").commit();
+
+                //Ask for type of view
                 AlertDialog.Builder dialog = new AlertDialog.Builder(Main.this);
                 dialog.setTitle("View");
                 dialog.setMessage("How would you like to see result?");
@@ -130,9 +127,7 @@ public class Main extends AppCompatActivity
                 dialog.setPositiveButton("Map View", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(Main.this, map.class);
-                        i.putExtra("latitude", latitude);
-                        i.putExtra("longitude", longitude);
+                       Intent i = new Intent(Main.this, map.class);
                         startActivity(i);
                     }
                 });
@@ -140,8 +135,6 @@ public class Main extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(Main.this, list2.class);
-                        i.putExtra("latitude", latitude);
-                        i.putExtra("longitude", longitude);
                         startActivity(i);
                     }
                 });
@@ -249,7 +242,8 @@ public class Main extends AppCompatActivity
                 return;
             }
             final Place place = places.get(0);
-            Toast.makeText(Main.this, place.getLatLng().latitude + " | " + place.getLatLng().longitude, Toast.LENGTH_SHORT).show();
+            latitude = place.getLatLng().latitude;
+            longitude = place.getLatLng().longitude;
             places.release();
         }
     };
