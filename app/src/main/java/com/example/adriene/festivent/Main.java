@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -152,15 +153,19 @@ public class Main extends AppCompatActivity
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //put data in prefs
-                prefs.edit().putString("latitude", latitude + "").commit();
-                prefs.edit().putString("longitude", longitude + "").commit();
+                if(ac.getText().toString() != "") {
+                    //put data in prefs
+                    prefs.edit().putString("latitude", latitude + "").commit();
+                    prefs.edit().putString("longitude", longitude + "").commit();
 
-                //show dialog to pick activity to view results
-                switchDialog();
+                    //show dialog to pick activity to view results
+                    switchDialog();
 
-                //add to ArrayList Appropriately
-                addToRecentItems(primaryText, secondaryText);
+                    //add to ArrayList Appropriately
+                    addToRecentItems(primaryText, secondaryText);
+                } else {
+                    Toast.makeText(Main.this, "Please select a location", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -210,6 +215,7 @@ public class Main extends AppCompatActivity
         Set<String> itemSet = prefs.getStringSet("items", null);
         if(itemSet != null) {
             recentItems.addAll(itemSet);
+            Collections.reverse(recentItems);
         }
     }
 
