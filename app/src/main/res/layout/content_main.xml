@@ -22,6 +22,17 @@
         android:textColor="#303F9F"
         android:textSize="30dp" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mTitle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="1"
+        android:id="@+id/linearLayout">
+
     <AutoCompleteTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,19 +48,28 @@
         android:typeface="serif"
         android:textStyle="normal"
         android:hint="Search a location..."
-        android:textColorHint="#393939" />
+        android:textColorHint="#393939"
+        android:layout_weight="0.95" />
 
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:text="Search"
-        android:id="@+id/sMain"
-        android:layout_below="@+id/ac"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/recbutton"
-        android:layout_marginTop="41dp"
-        android:textStyle="normal"
-        android:typeface="serif"
-        android:textSize="17dp"
-        android:textColor="#FFFFFF" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="@android:drawable/ic_menu_search"
+            android:id="@+id/sIButton"
+            android:backgroundTint="#303F9F"
+            android:layout_weight="0.05" />
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="260dp"
+        android:id="@+id/mListView"
+        android:choiceMode="singleChoice"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"/>
+
 </RelativeLayout>

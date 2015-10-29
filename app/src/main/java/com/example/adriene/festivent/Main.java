@@ -1,6 +1,7 @@
 package com.example.adriene.festivent;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,9 +18,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,20 +39,29 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.OnConnectionFailedListener {
 
     public static AutoCompleteTextView ac;
-    public static Button search;
+    public static ImageButton search;
     public static FloatingActionButton fab;
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
+    private ListView mListView;
     public double latitude, longitude;
     public String wordLocation;
     public GPS gps;
     public boolean trigger = false;
     public SharedPreferences prefs;
+    public CharSequence primaryText = "";
+    public CharSequence secondaryText = "";
+    private ArrayList<String> recentItems = new ArrayList<String>();
+    public ArrayAdapter<String> adapterForList;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
@@ -55,8 +70,9 @@ public class Main extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //get preference manager
+        //get Preference Manager
         prefs = PreferenceManager.getDefaultSharedPreferences(Main.this);
+
         //setup place lookup client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, 0, this)
@@ -70,21 +86,39 @@ public class Main extends AppCompatActivity
         //Intialize the varibale and views
         fab = (FloatingActionButton) findViewById(R.id.fab);
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
-        search = (Button) findViewById(R.id.sMain);
+        search = (ImageButton) findViewById(R.id.sIButton);
+        mListView = (ListView) findViewById(R.id.mListView);
+        adapterForList = new ArrayAdapter<String>(Main.this, android.R.layout.simple_list_item_1, recentItems);
+        TextView header = new TextView(Main.this);
+        header.setText("Recent Searches: ");
+        mListView.addHeaderView(header);
+        mListView.setAdapter(adapterForList);
 
+        //list to click on ListView
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //listen to auto-complete option click
         ac.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //hide keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(
+                        ac.getWindowToken(), 0);
+
                 final AutocompletePrediction item = mAdapter.getItem(position);
                 final String placeId = item.getPlaceId();
-                final CharSequence primaryText = item.getPrimaryText(null);
+                primaryText = item.getPrimaryText(null);
+                secondaryText = item.getSecondaryText(null);
 
                 PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                         .getPlaceById(mGoogleApiClient, placeId);
                 placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-
-                Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -93,6 +127,8 @@ public class Main extends AppCompatActivity
                         null);
         ac.setAdapter(mAdapter);
 
+
+        //listen to fab button click
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,6 +148,7 @@ public class Main extends AppCompatActivity
             }
         });
 
+        //listen to search button click
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +158,9 @@ public class Main extends AppCompatActivity
 
                 //show dialog to pick activity to view results
                 switchDialog();
+
+                //add to ArrayList Appropriately
+                addToRecentItems(primaryText, secondaryText);
             }
         });
 
@@ -134,6 +174,44 @@ public class Main extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        convertArrayToSet();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        convertSetToArray();
+    }
+
+    private void addToRecentItems(CharSequence primaryText, CharSequence secondaryText) {
+        String item = primaryText.toString() + " " + secondaryText.toString();
+        int size = recentItems.size();
+        if(size >= 3) {
+            recentItems.remove(size - 1);
+            recentItems.add(0, item);
+        } else {
+            recentItems.add(0, item);
+        }
+        adapterForList.notifyDataSetChanged();
+    }
+
+    //convert the Arraylist into Set and store it in Shared Preferences
+    public void convertArrayToSet() {
+        if(!recentItems.isEmpty()) {
+            Set<String> itemSet = new HashSet<String>(recentItems);
+            prefs.edit().putStringSet("items", itemSet).apply();
+        }
+    }
+
+    public void convertSetToArray() {
+        Set<String> itemSet = prefs.getStringSet("items", null);
+        if(itemSet != null) {
+            recentItems.addAll(itemSet);
+        }
+    }
 
 
     @Override
@@ -143,6 +221,7 @@ public class Main extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            convertArrayToSet();
         }
     }
 
