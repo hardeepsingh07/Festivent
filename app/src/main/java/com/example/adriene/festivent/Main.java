@@ -100,7 +100,6 @@ public class Main extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainLocatioonInfo item = recentItems.get(position - 1);
-
                 //put data in prefs
                 prefs.edit().putString("latitude", item.getLatitude() + "").commit();
                 prefs.edit().putString("longitude", item.getLongitude() + "").commit();
@@ -195,26 +194,38 @@ public class Main extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
         //convertSetToArray();
     }
 
     private void addToRecentItems(CharSequence primaryText, CharSequence secondaryText) {
         String item = primaryText.toString() + " " + secondaryText.toString();
         int size = recentItems.size();
-        if(size >= 3) {
-            recentItems.remove(size - 1);
-            recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
-        } else {
-            recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
+        boolean check = contains(item);
+        if(!check) {
+            if (size >= 3) {
+                recentItems.remove(size - 1);
+                recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
+            } else {
+                recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
+            }
+            adapterForList.notifyDataSetChanged();
         }
-        adapterForList.notifyDataSetChanged();
     }
 
-   /* //convert the Arraylist into Set and store it in Shared Preferences
-    public void convertArrayToSet() {
+    public boolean contains(String name) {
+        for (MainLocatioonInfo item : recentItems) {
+            if (item.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //convert the Arraylist into Set and store it in Shared Preferences
+ /*   public void convertArrayToSet() {
         if(!recentItems.isEmpty()) {
-            Set<String> itemSet = new HashSet<String>(recentItems);
-            prefs.edit().putStringSet("items", itemSet).apply();
+            prefs.edit().putStringSet("items", new Gson().toJson(recentItems))
         }
     }
 
@@ -225,7 +236,6 @@ public class Main extends AppCompatActivity
             Collections.reverse(recentItems);
         }
     }*/
-
 
     @Override
     public void onBackPressed() {
@@ -290,23 +300,6 @@ public class Main extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final AutocompletePrediction item = mAdapter.getItem(position);
-            final String placeId = item.getPlaceId();
-            final CharSequence primaryText = item.getPrimaryText(null);
-
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                    .getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-
-            Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
-        }
-    };
 
     //Take care of the results
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback

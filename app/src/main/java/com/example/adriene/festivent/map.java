@@ -1,25 +1,21 @@
 package com.example.adriene.festivent;
 
-import android.app.AlertDialog;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
-import android.provider.*;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -80,22 +76,13 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         @Override
         public void onMapLoaded() {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12));
-            mMap.addMarker(new MarkerOptions().position(latlng).title("Your Location"));
+            mMap.addMarker(new MarkerOptions()
+                    .position(latlng)
+                    .title("Title")
+                    .snippet("Event Description")
+                    .infoWindowAnchor(0.5f, 0.5f));
             pBar.setVisibility(View.GONE);
         }
     };
-
- /*
-  //Watch location and follows it, not needed it right now
-  public GoogleMap.OnMyLocationChangeListener update = new GoogleMap.OnMyLocationChangeListener() {
-        @Override
-        public void onMyLocationChange(Location location) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            latlng = new LatLng(latitude, longitude);
-            mMap.setOnMapLoadedCallback(callback);
-        }
-    };
-*/
 
 }
