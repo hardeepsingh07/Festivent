@@ -61,8 +61,8 @@ public class Main extends AppCompatActivity
     public SharedPreferences prefs;
     public CharSequence primaryText = "";
     public CharSequence secondaryText = "";
-    private ArrayList<String> recentItems = new ArrayList<String>();
-    public ArrayAdapter<String> adapterForList;
+    private ArrayList<MainLocatioonInfo> recentItems = new ArrayList<MainLocatioonInfo>();
+    public ArrayAdapter<MainLocatioonInfo> adapterForList;
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
@@ -89,7 +89,7 @@ public class Main extends AppCompatActivity
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (ImageButton) findViewById(R.id.sIButton);
         mListView = (ListView) findViewById(R.id.mListView);
-        adapterForList = new ArrayAdapter<String>(Main.this, android.R.layout.simple_list_item_1, recentItems);
+        adapterForList = new mListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
         TextView header = new TextView(Main.this);
         header.setText("Recent Searches: ");
         mListView.addHeaderView(header);
@@ -99,7 +99,14 @@ public class Main extends AppCompatActivity
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
+                MainLocatioonInfo item = recentItems.get(position - 1);
+
+                //put data in prefs
+                prefs.edit().putString("latitude", item.getLatitude() + "").commit();
+                prefs.edit().putString("longitude", item.getLongitude() + "").commit();
+
+                //trigger the swtich dialog
+                switchDialog();
             }
         });
 
@@ -182,13 +189,13 @@ public class Main extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        convertArrayToSet();
+        //convertArrayToSet();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        convertSetToArray();
+        //convertSetToArray();
     }
 
     private void addToRecentItems(CharSequence primaryText, CharSequence secondaryText) {
@@ -196,14 +203,14 @@ public class Main extends AppCompatActivity
         int size = recentItems.size();
         if(size >= 3) {
             recentItems.remove(size - 1);
-            recentItems.add(0, item);
+            recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
         } else {
-            recentItems.add(0, item);
+            recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
         }
         adapterForList.notifyDataSetChanged();
     }
 
-    //convert the Arraylist into Set and store it in Shared Preferences
+   /* //convert the Arraylist into Set and store it in Shared Preferences
     public void convertArrayToSet() {
         if(!recentItems.isEmpty()) {
             Set<String> itemSet = new HashSet<String>(recentItems);
@@ -217,7 +224,7 @@ public class Main extends AppCompatActivity
             recentItems.addAll(itemSet);
             Collections.reverse(recentItems);
         }
-    }
+    }*/
 
 
     @Override
@@ -227,7 +234,7 @@ public class Main extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-            convertArrayToSet();
+           // convertArrayToSet();
         }
     }
 
