@@ -5,7 +5,7 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/imageView"
+        android:id="@+id/markerImage"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -18,7 +18,7 @@
         android:text="markerTitle"
         android:id="@+id/markerTitle"
         android:layout_above="@+id/marketDes"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_toRightOf="@+id/markerImage"
         android:typeface="serif" />
 
     <TextView
@@ -27,8 +27,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="markerDes"
         android:id="@+id/marketDes"
-        android:layout_alignBottom="@+id/imageView"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_alignBottom="@+id/markerImage"
+        android:layout_toRightOf="@+id/markerImage"
         android:layout_marginLeft="38dp"
         android:layout_marginStart="38dp"
         android:typeface="serif" />
