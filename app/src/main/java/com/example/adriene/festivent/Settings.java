@@ -4,6 +4,7 @@ package com.example.adriene.festivent;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -33,6 +35,7 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
+
 public class Settings extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +124,19 @@ public class Settings extends AppCompatPreferenceActivity {
                     }
                 }
 
-            } else {
+            }
+            else if(preference instanceof SwitchPreference){
+                SwitchPreference switchPreference = (SwitchPreference) preference;
+                Boolean isOn = switchPreference.isChecked();
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+                if(isOn) {
+                    pref.edit().putString("dialogChoice", "map").commit();
+                } else {
+                    pref.edit().putString("dialogChoice", "list").commit();
+                }
+
+            }
+            else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -179,6 +194,7 @@ public class Settings extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("example_text"));
+            bindPreferenceSummaryToValue(findPreference("default_switch"));
             //bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
