@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -285,7 +286,7 @@ public class Main extends AppCompatActivity
             Intent i = new Intent(Main.this, list2.class);
             startActivity(i);
         } else if (id == R.id.nav_settings) {
-            Toast.makeText(Main.this, "filler1 touched", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main.this, "Settings Touched", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Main.this, Settings.class);
             startActivity(i);
         } else if (id == R.id.nav_filler2) {
