@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:key="default_switch"
+        android:key="switch1"
         android:title="Enable Map as Default View"
-        android:summary="If switch is off, list view will be the default view."
-        android:defaultValue="true" />
+        android:summary="If switch is off, list view will be the default view." />
+
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -22,15 +22,13 @@
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
 
-    <!--
-    <ListPreference
+    <!-- <ListPreference
         android:key="example_list"
         android:title="@string/pref_title_add_friends_to_messages"
         android:defaultValue="-1"
         android:entries="@array/pref_example_list_titles"
         android:entryValues="@array/pref_example_list_values"
         android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
-        -->
+        android:positiveButtonText="@null" /> -->
 
 </PreferenceScreen>

@@ -127,15 +127,14 @@ public class Settings extends AppCompatPreferenceActivity {
 
             }
             else if(preference instanceof SwitchPreference){
-                SwitchPreference switchPreference = (SwitchPreference) preference;
-                Boolean isOn = switchPreference.isChecked();
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-                if(isOn) {
-                    pref.edit().putString("dialogChoice", "map").commit();
+                if(stringValue == "true") {
+                    //pref.edit().putString("dialogChoice", "map").commit();
+                    Toast.makeText(preference.getContext(), "yes", Toast.LENGTH_SHORT).show();
                 } else {
-                    pref.edit().putString("dialogChoice", "list").commit();
+                    //pref.edit().putString("dialogChoice", "list").commit();
+                    Toast.makeText(preference.getContext(), "no", Toast.LENGTH_SHORT).show();
                 }
-
             }
             else {
                 // For all other preferences, set the summary to the value's
@@ -195,7 +194,7 @@ public class Settings extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("default_switch"));
+            bindPreferenceSummaryToValue(findPreference("switch1"));
             //bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
