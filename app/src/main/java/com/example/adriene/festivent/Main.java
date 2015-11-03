@@ -170,6 +170,8 @@ public class Main extends AppCompatActivity
 
                     //add to ArrayList Appropriately
                     addToRecentItems(primaryText, secondaryText);
+
+                    ac.setText("");
                 } else {
                     Toast.makeText(Main.this, "Please select a location", Toast.LENGTH_SHORT).show();
                 }

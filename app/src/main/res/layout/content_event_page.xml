@@ -4,7 +4,145 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_event_page" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.example.adriene.festivent.EventPage">
+    tools:showIn="@layout/activity_event_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.adriene.festivent.EventPage">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_agenda"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Start Time"
+            android:id="@+id/textTime"
+            android:layout_alignBottom="@+id/imageTime"
+            android:layout_toRightOf="@+id/imageTime"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_alignTop="@+id/imageTime"
+            android:gravity="center_vertical"
+            android:textStyle="normal"
+            android:typeface="serif" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="0.5dp"
+            android:background="#3F51B5"
+            android:id="@+id/imageView"
+            android:layout_below="@+id/textTime"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_compass"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Address"
+            android:id="@+id/textAddress"
+            android:gravity="center_vertical"
+            android:textStyle="normal"
+            android:typeface="serif"
+            android:layout_alignBottom="@+id/imageView2"
+            android:layout_alignLeft="@+id/textTime"
+            android:layout_alignStart="@+id/textTime"
+            android:layout_alignTop="@+id/imageView2" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="0.5dp"
+            android:background="#3F51B5"
+            android:id="@+id/imageView3"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/textAddress"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView4"
+            android:layout_marginTop="15dp"
+            android:src="@android:drawable/ic_menu_call"
+            android:layout_below="@+id/imageView3"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_alignStart="@+id/imageView2" />
+
+        <TextView
+            android:layout_width="275dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="PhoneNumber"
+            android:id="@+id/textPhone"
+            android:gravity="center_vertical"
+            android:textStyle="normal"
+            android:typeface="serif"
+            android:layout_alignTop="@+id/imageView4"
+            android:layout_alignLeft="@+id/textAddress"
+            android:layout_alignStart="@+id/textAddress"
+            android:layout_alignBottom="@+id/imageView4" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="0.5dp"
+            android:background="#3F51B5"
+            android:id="@+id/imageView5"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/textPhone"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView6"
+            android:src="@android:drawable/ic_menu_edit"
+            android:layout_below="@+id/imageView5"
+            android:layout_alignLeft="@+id/imageView4"
+            android:layout_alignStart="@+id/imageView4"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:layout_width="275dp"
+            android:layout_height="100dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Description"
+            android:id="@+id/textDescription"
+            android:textStyle="normal"
+            android:typeface="serif"
+            android:layout_alignTop="@+id/imageView6"
+            android:layout_alignLeft="@+id/textPhone"
+            android:layout_alignStart="@+id/textPhone" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="0.5dp"
+            android:background="#3F51B5"
+            android:id="@+id/imageView7"
+            android:layout_below="@+id/textDescription"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+
+    </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>

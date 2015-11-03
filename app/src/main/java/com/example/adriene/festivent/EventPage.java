@@ -21,6 +21,7 @@ public class EventPage extends AppCompatActivity {
         setContentView(R.layout.activity_event_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Event Title");
+        toolbar.setSubtitle("Event Small Description");
         setSupportActionBar(toolbar);
 
         Intent i = getIntent();
