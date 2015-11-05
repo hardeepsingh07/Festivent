@@ -280,23 +280,18 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            Toast.makeText(Main.this, "Show Map Touched", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Main.this, map.class);
             startActivity(i);
         } else if (id == R.id.nav_list) {
-            Toast.makeText(Main.this, "Show List Touched", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Main.this, list2.class);
             startActivity(i);
         } else if (id == R.id.nav_settings) {
-            Toast.makeText(Main.this, "Settings Touched", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Main.this, Settings.class);
             startActivity(i);
-        } else if (id == R.id.nav_filler2) {
-            Toast.makeText(Main.this, "filler2 Touched", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
-            Toast.makeText(Main.this, "share Touched", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_send) {
-            Toast.makeText(Main.this, "send touched", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
