@@ -1,7 +1,10 @@
 package com.example.adriene.festivent;
 
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -31,7 +34,7 @@ import java.util.Random;
 public class map extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private FloatingActionButton mFab;
+    private FloatingActionButton mFab, filterFab;
     private ProgressBar pBar;
     public double latitude = 0.0, longitude = 0.0;
     private LatLng latlng;
@@ -50,6 +53,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_map);
 
         //intialize the variables and hashmap
+        filterFab = (FloatingActionButton) findViewById(R.id.filterFab);
         mFab = (FloatingActionButton) findViewById(R.id.mfab);
         pBar = (ProgressBar) findViewById(R.id.pMap);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -63,6 +67,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
             dataIncoming = true;
         } catch (Exception e) {
+            Toast.makeText(map.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             latitude = 0.0;
             longitude = 0.0;
         }
@@ -83,6 +88,13 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
+        filterFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFilterDialog();
+            }
+        });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -91,7 +103,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        markerHash = new HashMap<Marker, myMarker>();
+        markerHash.clear();
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         if(!dataIncoming) {
@@ -122,8 +134,12 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public GoogleMap.OnMapLoadedCallback mapLoaded = new GoogleMap.OnMapLoadedCallback() {
         @Override
         public void onMapLoaded() {
+            //clean the array from previous values
+            markerArray.clear();
+
             //add my current location first
-            markerArray.add(new myMarker("You are here!", "You current locatoin", latitude, longitude, 0.0));
+            markerArray.add(new myMarker("You are here!", "You current location", latitude, longitude, 0.0));
+
             //Show events data
             findRandomPoints(latitude, longitude, radius);
             plotMarkers();
@@ -147,10 +163,8 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public static void findRandomPoints(double lat, double log, int radius) {
         for(int i = 0; i < 6; i++) {
             Random random = new Random();
-
             // Convert radius from meters to degrees
             double radiusInDegrees = radius / 111000f;
-
             double u = random.nextDouble();
             double v = random.nextDouble();
             double w = radiusInDegrees * Math.sqrt(u);
@@ -160,10 +174,10 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
 
             // Adjust the x-coordinate for the shrinking of the east-west distances
             double new_x = x / Math.cos(log);
-
             double newLatitude = new_x + lat;
             double newLongitude = y + log;
-            markerArray.add(new myMarker("Title" + random.nextInt(100), "Description" + random.nextInt(100), newLatitude, newLongitude, 0.0));
+            markerArray.add(new myMarker("Title" + random.nextInt(100),
+                    "Description" + random.nextInt(100), newLatitude, newLongitude, 0.0));
         }
     }
 
@@ -177,8 +191,39 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                 Marker currentMarker = mMap.addMarker(markerOptions);
                 markerHash.put(currentMarker, marker);
                 mMap.setInfoWindowAdapter(new MarkerAdapter(map.this, markerHash));
-
             }
         }
+    }
+
+    public void showFilterDialog() {
+        final ArrayList<String> selectedList = new ArrayList<>();
+        final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
+        AlertDialog.Builder dialog = new AlertDialog.Builder(map.this);
+        dialog.setTitle("Filter Results");
+        dialog.setMultiChoiceItems(options, null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected,
+                                        boolean isChecked) {
+                        if (isChecked) {
+                            selectedList.add(options[indexSelected]);
+                        } else if (selectedList.contains(options[indexSelected])) {
+                            selectedList.remove(options[indexSelected]);
+                        }
+                    }
+                })
+                .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(map.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        dialog.create().show();
     }
 }

@@ -60,14 +60,6 @@ public class EventPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
-                /*Intent intent = new Intent(Intent.ACTION_EDIT);
-                intent.setType("vnd.android.cursor.item/event");
-                intent.putExtra("beginTime", sTime + "5.00");
-                intent.putExtra("allDay", true);
-                intent.putExtra("endTime", eTime + "6.00");
-                intent.putExtra("title", title + "A Test Event from android app");
-                startActivity(intent);*/
-
                 Intent i = new Intent(Intent.ACTION_INSERT)
                                 .setData(CalendarContract.Events.CONTENT_URI)
                                  .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, sTime + "5.00")
