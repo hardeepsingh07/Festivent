@@ -37,6 +37,7 @@ public class GPS extends Service implements LocationListener {
     public double latitude;
     public int permissionCode;
     public double longitude;
+    public String zipcode;
     protected LocationManager locationManager;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
@@ -114,6 +115,10 @@ public class GPS extends Service implements LocationListener {
         return latitude;
     }
 
+    public String getZipcode() {
+        return zipcode;
+    }
+
     public double getLongitude() {
         if(location != null) {
             longitude = location.getLongitude();
@@ -157,8 +162,9 @@ public class GPS extends Service implements LocationListener {
             }
             else {
                 if (addresses.size() > 0) {
-                    result = addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +
+                    result = addresses.get(0).getLocality() +
                             ", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName();
+                    zipcode = addresses.get(0).getPostalCode();
                 }
             }
         }

@@ -7,26 +7,18 @@ import android.graphics.Bitmap;
  */
 public class EventInfo {
     Bitmap image;
-    String eventName, description;
-    String startDate, eventTime;
+    String eventName, description, startDate, endTime, url, imageUrl;
     double latitude, longitude;
 
-    public EventInfo(){
-        this.image = null;
-        this.eventName = "";
-        this.description = "";
-        this.startDate = "";
-        this.eventTime = "";
-        this.latitude = 0;
-        this.longitude = 0;
-    }
-
-    public EventInfo(String eventName){
+    public EventInfo(String eventName, String description, String startDate,
+                     String endTime, String url, String imageUrl){
         this.image = null;
         this.eventName = eventName;
-        this.description = "";
-        this.startDate = "";
-        this.eventTime = "";
+        this.description = description;
+        this.startDate = startDate;
+        this.endTime = endTime;
+        this.url = url;
+        this.imageUrl = imageUrl;
         this.latitude = 0;
         this.longitude = 0;
     }
@@ -49,8 +41,10 @@ public class EventInfo {
         this.startDate = startDate;
     }
 
-    public void setEventTime(String eventTime) {
-        this.eventTime = eventTime;
+    public void setUrl(String url)  {   this.url = url; }
+
+    public void setEndTime(String eventTime) {
+        this.endTime = endTime;
     }
 
     public void setLatitude(double latitude) {
@@ -69,7 +63,7 @@ public class EventInfo {
 
     public void setWhen(String startDate, String eventTime){
         this.startDate = startDate;
-        this.eventTime = eventTime;
+        this.endTime = endTime;
     }
 
     //Getters
@@ -89,8 +83,8 @@ public class EventInfo {
         return startDate;
     }
 
-    public String getEventTime() {
-        return eventTime;
+    public String getEndTime() {
+        return endTime;
     }
 
     public double getLatitude() {
@@ -100,4 +94,6 @@ public class EventInfo {
     public double getLongitude() {
         return longitude;
     }
+
+    public String getUrl() { return url; }
 }
