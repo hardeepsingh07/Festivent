@@ -4,6 +4,9 @@ package com.example.adriene.festivent;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import java.text.ParseException;
+import java.util.Date;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -13,6 +16,7 @@ import com.example.adriene.festivent.EventInfo;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -32,15 +36,25 @@ class MyCustomAdapter extends ArrayAdapter<EventInfo>{
 
     public View getView(int position,View convertView, ViewGroup parent){
         EventInfo event = getItem(position);
-        if(convertView == null) {
-            LayoutInflater theInflater = LayoutInflater.from(getContext());
-            convertView = theInflater.inflate(R.layout.rowlayout, parent, false);
-        }
+        LayoutInflater theInflater = LayoutInflater.from(getContext());
+        convertView = theInflater.inflate(R.layout.rowlayout, parent, false);
         TextView title = (TextView) convertView.findViewById(R.id.label);
         title.setText(event.getEventName());
 
         TextView description = (TextView) convertView.findViewById(R.id.DescriptionTextView);
         description.setText(event.getDescription());
+
+        TextView date = (TextView) convertView.findViewById(R.id.dateTextView);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date newDate = null;
+        try {
+            newDate = format.parse(event.getStartDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
+        String formatted = format.format(newDate);
+        date.setText(formatted);
 
         ImageView theImageView = (ImageView) convertView.findViewById(R.id.icon);
         theImageView.setImageResource(R.drawable.ic_play_light);

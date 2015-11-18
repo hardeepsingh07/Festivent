@@ -1,42 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4px"
-            android:layout_marginRight="10px"
-            android:layout_marginTop="4px"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_play_light" >
+            android:src="@drawable/ic_play_light"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
         </ImageView>
 
         <TextView
             android:id="@+id/label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
             android:text="Event Name"
-            android:textSize="15dp" >
+            android:textSize="17dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/icon"
+            android:textStyle="normal|italic"
+            android:typeface="serif"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#393939">
         </TextView>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
             android:text="Description goes here"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="3"
             android:id="@+id/DescriptionTextView"
             android:layout_row="1"
-            android:layout_column="1" />
-    </GridLayout>
+            android:layout_column="1"
+            android:textSize="15dp"
+            android:typeface="serif"
+            android:textStyle="italic"
+            android:layout_below="@+id/label"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toRightOf="@+id/icon"
+            android:layout_toEndOf="@+id/icon" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/dateTextView"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/icon"
+        android:gravity="center|right"
+        android:textStyle="normal|italic"
+        android:typeface="serif"
+        android:textSize="17dp"
+        android:layout_below="@+id/DescriptionTextView"
+        android:textColor="#303F9F" />
+
+</RelativeLayout>

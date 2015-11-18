@@ -88,7 +88,7 @@ public class list2 extends AppCompatActivity {
         param.put("location", zipcode);
         param.put("startDate", getDate());
         param.put("endDate", getDateIncrement());
-        param.put("within", "10mi");
+        param.put("within", "25mi");
         param.put("page", "1");
 
         //execute the parse call
@@ -173,6 +173,11 @@ public class list2 extends AppCompatActivity {
                 if(data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(list2.this, events.length() + "" , Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                     //loop through each event
                     for (int i = 0; i < events.length(); i++) {
@@ -195,11 +200,14 @@ public class list2 extends AppCompatActivity {
                         String endTime = end.getString(TAG_LOCAL);
 
                         //get logo object
-                        JSONObject logo = e.getJSONObject(TAG_LOGO);
-                        String imageUrl = logo.getString(TAG_URL);
-
+                        String imageUrl;
+                        if (!e.isNull("logo")) {
+                            JSONObject logo = e.getJSONObject(TAG_LOGO);
+                            imageUrl = logo.getString(TAG_URL);
+                        } else {
+                            imageUrl = null;
+                        }
                         myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl));
-                        Toast.makeText(list2.this, "Done Parsing!", Toast.LENGTH_SHORT).show();
                     }
                 }
             } catch (final Exception e) {
