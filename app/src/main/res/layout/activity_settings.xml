@@ -7,4 +7,103 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.adriene.festivent.Settings">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Default View:"
+        android:id="@+id/default_text_view"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time:"
+        android:id="@+id/time_text_view"
+        android:textSize="20dp"
+        android:layout_below="@+id/default_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="51dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Radius:"
+        android:id="@+id/Radius_text_view"
+        android:textSize="20dp"
+        android:layout_below="@+id/time_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="56dp"
+        android:textStyle="bold" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_default"
+        android:layout_above="@+id/time_text_view"
+        android:layout_centerHorizontal="true"
+        android:checked="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_time"
+        android:spinnerMode="dropdown"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/time_text_view"
+        android:layout_alignLeft="@+id/switch_default"
+        android:layout_alignStart="@+id/switch_default" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_radius"
+        android:spinnerMode="dropdown"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/Radius_text_view"
+        android:layout_alignLeft="@+id/spinner_time"
+        android:layout_alignStart="@+id/spinner_time" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Switch on is Map View, Switch off is List View"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/default_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/switch_default"
+        android:layout_toStartOf="@+id/switch_default" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Filter by desired time of events"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/time_text_view"
+        android:layout_toStartOf="@+id/spinner_time"
+        android:layout_alignRight="@+id/default_text_view"
+        android:layout_alignEnd="@+id/default_text_view" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Filter by desired radius range"
+        android:id="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/Radius_text_view"
+        android:layout_alignRight="@+id/textView3"
+        android:layout_alignEnd="@+id/textView3" />
 </RelativeLayout>
