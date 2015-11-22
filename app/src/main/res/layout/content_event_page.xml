@@ -34,7 +34,10 @@
             android:layout_alignTop="@+id/imageTime"
             android:gravity="center_vertical"
             android:textStyle="normal"
-            android:typeface="serif" />
+            android:typeface="serif"
+            android:layout_alignRight="@+id/imageView"
+            android:layout_alignEnd="@+id/imageView"
+            android:textSize="12dp" />
 
         <View
             android:layout_width="300dp"
@@ -68,7 +71,10 @@
             android:layout_alignBottom="@+id/imageView2"
             android:layout_alignLeft="@+id/textTime"
             android:layout_alignStart="@+id/textTime"
-            android:layout_alignTop="@+id/imageView2" />
+            android:layout_alignTop="@+id/imageView2"
+            android:layout_alignRight="@+id/imageView"
+            android:layout_alignEnd="@+id/imageView"
+            android:textSize="12dp" />
 
         <View
             android:layout_width="300dp"
@@ -84,7 +90,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView4"
             android:layout_marginTop="15dp"
-            android:src="@android:drawable/ic_menu_call"
+            android:src="@android:drawable/ic_menu_search"
             android:layout_below="@+id/imageView3"
             android:layout_alignLeft="@+id/imageView2"
             android:layout_alignStart="@+id/imageView2" />
@@ -93,15 +99,18 @@
             android:layout_width="275dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="PhoneNumber"
-            android:id="@+id/textPhone"
+            android:text="Url"
+            android:id="@+id/textUrl"
             android:gravity="center_vertical"
             android:textStyle="normal"
             android:typeface="serif"
             android:layout_alignTop="@+id/imageView4"
             android:layout_alignLeft="@+id/textAddress"
             android:layout_alignStart="@+id/textAddress"
-            android:layout_alignBottom="@+id/imageView4" />
+            android:layout_alignRight="@+id/textAddress"
+            android:layout_alignEnd="@+id/textAddress"
+            android:layout_alignBottom="@+id/imageView4"
+            android:textSize="12dp" />
 
         <View
             android:layout_width="300dp"
@@ -109,7 +118,7 @@
             android:background="#3F51B5"
             android:id="@+id/imageView5"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/textPhone"
+            android:layout_below="@+id/textUrl"
             android:layout_centerHorizontal="true" />
 
         <ImageView
@@ -128,11 +137,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Description"
             android:id="@+id/textDescription"
-            android:textStyle="normal"
             android:typeface="serif"
+            android:scrollbars="vertical"
             android:layout_alignTop="@+id/imageView6"
-            android:layout_alignLeft="@+id/textPhone"
-            android:layout_alignStart="@+id/textPhone" />
+            android:layout_alignLeft="@+id/textUrl"
+            android:layout_alignStart="@+id/textUrl"
+            android:textSize="12dp"
+            android:textStyle="normal"
+            android:layout_alignRight="@+id/imageView5"
+            android:layout_alignEnd="@+id/imageView5" />
 
         <View
             android:layout_width="300dp"

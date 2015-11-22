@@ -1,8 +1,8 @@
 package com.example.adriene.festivent;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -18,10 +18,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+
 import com.parse.ParseCloud;
 
 import org.json.JSONArray;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -32,7 +33,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
-import static android.app.Activity.*;
 
 public class list2 extends AppCompatActivity {
 
@@ -70,7 +70,6 @@ public class list2 extends AppCompatActivity {
         fabFilter = (FloatingActionButton) findViewById(R.id.filterFabList);
         prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
         theListView = (ListView) findViewById(R.id.listView);
-
         //get Shared Preferences
         try {
             GPS gps = new GPS(list2.this);
@@ -98,7 +97,9 @@ public class list2 extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 EventInfo event = (EventInfo) adapterView.getItemAtPosition(i);
-                Toast.makeText(list2.this, event.eventName, Toast.LENGTH_SHORT).show();
+                Intent j = new Intent(list2.this, EventPage.class);
+                j.putExtra("event", event);
+                startActivity(j);
             }
         });
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="wrap_content" android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="100dp"
-            android:layout_height="150dp"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             android:src="@drawable/ic_play_light"
@@ -16,55 +16,66 @@
 
         <TextView
             android:id="@+id/label"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="Event Name"
-            android:textSize="17dp"
-            android:layout_marginTop="10dp"
+            android:textSize="15dp"
+            android:textStyle="normal"
+            android:typeface="serif"
+            android:textColor="#393939"
+            android:gravity="center_vertical"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/icon"
-            android:textStyle="normal|italic"
-            android:typeface="serif"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textColor="#393939">
+            android:minLines="1">
         </TextView>
 
         <TextView
             android:layout_width="300dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:text="Description goes here"
             android:ellipsize="end"
             android:maxLines="3"
             android:id="@+id/DescriptionTextView"
             android:layout_row="1"
             android:layout_column="1"
-            android:textSize="15dp"
+            android:textSize="12dp"
             android:typeface="serif"
             android:textStyle="italic"
             android:layout_below="@+id/label"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_toRightOf="@+id/icon"
-            android:layout_toEndOf="@+id/icon" />
+            android:layout_toEndOf="@+id/icon"
+            android:minLines="2" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/dateTextView"
-        android:layout_toRightOf="@+id/icon"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/icon"
         android:gravity="center|right"
         android:textStyle="normal|italic"
         android:typeface="serif"
-        android:textSize="17dp"
+        android:textSize="10dp"
+        android:textColor="#303F9F"
         android:layout_below="@+id/DescriptionTextView"
-        android:textColor="#303F9F" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/pBarList"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/label"
+        android:layout_toStartOf="@+id/label"
+        android:indeterminate="false"
+        android:foregroundGravity="center|center_horizontal" />
 
 </RelativeLayout>

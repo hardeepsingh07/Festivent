@@ -19,6 +19,11 @@
                 android:layout_height="?attr/actionBarSize" android:layout_width="match_parent"
                 app:layout_collapseMode="pin" app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/backImage"/>
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
