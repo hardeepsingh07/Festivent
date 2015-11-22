@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
@@ -40,11 +43,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.OnConnectionFailedListener {
 
+    private static final int VOICE_RECOGNITION_REQUEST_CODE = 420;
     public static AutoCompleteTextView ac;
     public static ImageButton search;
     public static FloatingActionButton fab;
@@ -122,7 +127,7 @@ public class Main extends AppCompatActivity
                 secondaryText = item.getSecondaryText(null);
 
                 PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                            .getPlaceById(mGoogleApiClient, placeId);
+                        .getPlaceById(mGoogleApiClient, placeId);
                 placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
             }
         });
@@ -176,6 +181,20 @@ public class Main extends AppCompatActivity
             }
         });
 
+        search.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(checkVoiceRecognition()) {
+                    Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                    i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
+                    i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a name of place...");
+                    i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    startActivityForResult(i, VOICE_RECOGNITION_REQUEST_CODE);
+                }
+                return true;
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -184,6 +203,31 @@ public class Main extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+            if (requestCode == RESULT_OK) {
+                ArrayList<String> temp = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (!temp.isEmpty()) {
+                    Toast.makeText(Main.this, temp.get(0), Toast.LENGTH_SHORT).show();
+                    ac.setText(temp.get(0));
+                }
+            }
+        } else if (resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
+            Toast.makeText(Main.this, "Audio Error", Toast.LENGTH_SHORT).show();
+        } else if (resultCode == RecognizerIntent.RESULT_CLIENT_ERROR) {
+            Toast.makeText(Main.this, "Client Error", Toast.LENGTH_SHORT).show();
+        } else if (resultCode == RecognizerIntent.RESULT_NETWORK_ERROR) {
+            Toast.makeText(Main.this, "Network Error", Toast.LENGTH_SHORT).show();
+        } else if (resultCode == RecognizerIntent.RESULT_NO_MATCH) {
+            Toast.makeText(Main.this, "No Match Error", Toast.LENGTH_SHORT).show();
+        } else if (resultCode == RecognizerIntent.RESULT_SERVER_ERROR) {
+            Toast.makeText(Main.this, "Server Error", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void addToRecentItems(CharSequence primaryText, CharSequence secondaryText) {
@@ -310,6 +354,19 @@ public class Main extends AppCompatActivity
                 dialog.create().show();
                 break;
         }
+    }
+
+    public boolean checkVoiceRecognition() {
+        // Check if voice recognition is present
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+                RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+        if (activities.size() == 0) {
+            Toast.makeText(Main.this, "Voice recognizer not avaliable/present",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
 }
