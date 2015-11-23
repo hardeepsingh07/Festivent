@@ -186,9 +186,8 @@ public class Main extends AppCompatActivity
             public boolean onLongClick(View v) {
                 if(checkVoiceRecognition()) {
                     Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                    i.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-                    i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a name of place...");
-                    i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
+                    //i.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say name of a place...");
                     startActivityForResult(i, VOICE_RECOGNITION_REQUEST_CODE);
                 }
                 return true;
@@ -209,12 +208,11 @@ public class Main extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
-            if (requestCode == RESULT_OK) {
-                ArrayList<String> temp = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                if (!temp.isEmpty()) {
-                    Toast.makeText(Main.this, temp.get(0), Toast.LENGTH_SHORT).show();
-                    ac.setText(temp.get(0));
-                }
+            ArrayList<String> temp = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if(temp != null) {
+                ac.setText(temp.get(0));
+            } else {
+                Toast.makeText(Main.this, "Please try again", Toast.LENGTH_SHORT).show();
             }
         } else if (resultCode == RecognizerIntent.RESULT_AUDIO_ERROR) {
             Toast.makeText(Main.this, "Audio Error", Toast.LENGTH_SHORT).show();
