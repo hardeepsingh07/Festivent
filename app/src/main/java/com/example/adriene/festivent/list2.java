@@ -70,6 +70,8 @@ public class list2 extends AppCompatActivity {
         fabFilter = (FloatingActionButton) findViewById(R.id.filterFabList);
         prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
         theListView = (ListView) findViewById(R.id.listView);
+        prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
+
         //get Shared Preferences
         try {
             GPS gps = new GPS(list2.this);
@@ -83,11 +85,30 @@ public class list2 extends AppCompatActivity {
             longitude = 0.0;
         }
 
+        //get desired date and settings
+        String miles = prefs.getString("miles", "25").substring(0,3).trim() + "mi";
+        String temp = prefs.getString("time", "1 Day");
+        String increment;
+        if(temp.endsWith("Day") || temp.endsWith("Days")) {
+            increment = temp.substring(0,1);
+        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
+            increment = temp.substring(0,1);
+            int t = Integer.parseInt(increment);
+            t *= 7;
+            increment = t + "";
+        } else {
+            increment = temp.substring(0,1);
+            int t = Integer.parseInt(increment);
+            t *= 30;
+            increment = t + "";
+        }
+
+
         //Prepare the Hash
         param.put("location", zipcode);
         param.put("startDate", getDate());
-        param.put("endDate", getDateIncrement());
-        param.put("within", "25mi");
+        param.put("endDate", getDateIncrement(Integer.parseInt(increment)));
+        param.put("within", miles);
         param.put("page", "1");
 
         //execute the parse call
@@ -150,14 +171,14 @@ public class list2 extends AppCompatActivity {
         return result;
     }
 
-    public String getDateIncrement() {
+    public String getDateIncrement(int increment) {
         String result = "";
         String current = getDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
         Calendar c = Calendar.getInstance();
         try {
             c.setTime(sdf.parse(current));
-            c.add(Calendar.DATE, 1);
+            c.add(Calendar.DATE, increment);
             result += sdf.format(c.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
