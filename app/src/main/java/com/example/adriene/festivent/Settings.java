@@ -42,11 +42,16 @@ public class Settings extends AppCompatActivity {
                 R.array.time_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerT.setAdapter(adapter);
-        spinnerT.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerT.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = parent.getItemAtPosition(position).toString();
                 prefs.edit().putString("time", selected).commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -55,11 +60,16 @@ public class Settings extends AppCompatActivity {
                 R.array.radius_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerR.setAdapter(adapter1);
-        spinnerR.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerR.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = parent.getItemAtPosition(position).toString();
                 prefs.edit().putString("miles", selected).commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }

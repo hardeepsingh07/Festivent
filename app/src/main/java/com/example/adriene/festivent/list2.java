@@ -96,7 +96,7 @@ public class list2 extends AppCompatActivity {
         }
 
         //get desired date and settings
-        //String miles = prefs.getString("miles", "25").substring(0,2).trim() + "mi";
+        String miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
         String temp = prefs.getString("time", "1 Day");
         String increment;
         if(temp.endsWith("Day") || temp.endsWith("Days")) {
@@ -118,7 +118,7 @@ public class list2 extends AppCompatActivity {
         param.put("location", zipcode);
         param.put("startDate", getDate());
         param.put("endDate", getDateIncrement(Integer.parseInt(increment)));
-        param.put("within", "25mi");
+        param.put("within", miles);
         param.put("page", "1");
 
         //execute the parse call
@@ -212,6 +212,13 @@ public class list2 extends AppCompatActivity {
                         JSONObject description = e.getJSONObject(TAG_DESCRIPTION);
                         String desc = description.getString(TAG_TEXT);
                         String url = e.getString(TAG_URL);
+                        if(desc == null) {
+                            desc = "No Description";
+                        }
+
+                        if(url == null) {
+                            url = "Website not provided";
+                        }
 
                         //get startTime object
                         JSONObject start = e.getJSONObject(TAG_START);

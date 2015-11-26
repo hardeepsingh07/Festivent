@@ -1,6 +1,7 @@
 package com.example.adriene.festivent;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,10 +28,11 @@ import java.util.Date;
  * Created by Hardeep Singh on 11/25/2015.
  */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private ArrayList<EventInfo> myEvents;
+    private static ArrayList<EventInfo> myEvents;
     public DisplayImageOptions options;
+    public static Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView title;
         public TextView description;
         public TextView date;
@@ -38,16 +41,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         public ViewHolder(View v) {
             super(v);
+            v.setOnClickListener(this);
             cv = (CardView) v.findViewById(R.id.card_view);
             title = (TextView) v.findViewById(R.id.label);
             description = (TextView) v.findViewById(R.id.descriptionTextView);
             date = (TextView) v.findViewById(R.id.dateTextView);
             imageView = (ImageView) v.findViewById(R.id.icon);
         }
+
+        @Override
+        public void onClick(View v) {
+            EventInfo event = (EventInfo) myEvents.get(getPosition());
+            Toast.makeText(context, event.eventName, Toast.LENGTH_SHORT).show();
+            Intent j = new Intent(context, EventPage.class);
+            j.putExtra("event", event);
+            context.startActivity(j);
+        }
     }
 
     public MyAdapter(Context context, ArrayList<EventInfo> myEvents) {
         this.myEvents = myEvents;
+        this.context = context;
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_pause_light)
                 .showImageForEmptyUri(R.drawable.ic_play_light)
@@ -73,9 +87,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final ViewHolder holder1 = holder;
-        holder1.title.setText(myEvents.get(position).getEventName());
-        holder1.description.setText(myEvents.get(position).getDescription());
+        holder.title.setText(myEvents.get(position).getEventName());
+        holder.description.setText(myEvents.get(position).getDescription());
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date newDate = null;
@@ -86,16 +99,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
         format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
         String formatted = format.format(newDate);
-        holder1.date.setText(formatted);
+        holder.date.setText(formatted);
 
 
-        holder1.imageView.setVisibility(View.GONE);
+        holder.imageView.setVisibility(View.GONE);
         //pBar.setVisibility(View.GONE);
         String url = myEvents.get(position).getImageUrl();
 
         if (url != null) {
             ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(url, holder1.imageView, options, new ImageLoadingListener() {
+            imageLoader.displayImage(url, holder.imageView, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
                     //pBar.setVisibility(View.VISIBLE);
@@ -104,14 +117,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
                     //pBar.setVisibility(View.GONE);
-                    holder1.imageView.setVisibility(View.VISIBLE);
+                    holder.imageView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    holder1.imageView.setImageBitmap(bitmap);
+                    holder.imageView.setImageBitmap(bitmap);
                     //pBar.setVisibility(View.GONE);
-                    holder1.imageView.setVisibility(View.VISIBLE);
+                    holder.imageView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
