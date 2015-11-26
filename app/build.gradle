@@ -30,4 +30,6 @@ dependencies {
     compile 'com.parse:parse-android:1.+'
     compile files('C:/Users/Hardeep Singh/Android Projects/Festivent/libs/universal-image-loader-1.9.4.jar')
     compile files('universal-image-loader-1.9.4.jar')
+    compile 'com.android.support:cardview-v7:+'
+    compile 'com.android.support:recyclerview-v7:+'
 }

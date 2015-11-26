@@ -10,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -50,7 +52,6 @@ public class list2 extends AppCompatActivity {
     public double latitude;
     public double longitude;
     public FloatingActionButton fabFilter;
-    public ListView theListView;
     public SharedPreferences prefs;
     public String zipcode;
     public HashMap<String, String> param = new HashMap<String, String>();
@@ -58,6 +59,9 @@ public class list2 extends AppCompatActivity {
     public JSONArray events = null;
     public ProgressBar pBar;
     public ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +73,14 @@ public class list2 extends AppCompatActivity {
         pBar.setVisibility(View.VISIBLE);
         fabFilter = (FloatingActionButton) findViewById(R.id.filterFabList);
         prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
-        theListView = (ListView) findViewById(R.id.listView);
+        //theListView = (ListView) findViewById(R.id.listView);
         prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
+
+        //recyclerview for listview
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         //get Shared Preferences
         try {
@@ -86,7 +96,7 @@ public class list2 extends AppCompatActivity {
         }
 
         //get desired date and settings
-        String miles = prefs.getString("miles", "25").substring(0,3).trim() + "mi";
+        //String miles = prefs.getString("miles", "25").substring(0,2).trim() + "mi";
         String temp = prefs.getString("time", "1 Day");
         String increment;
         if(temp.endsWith("Day") || temp.endsWith("Days")) {
@@ -108,21 +118,11 @@ public class list2 extends AppCompatActivity {
         param.put("location", zipcode);
         param.put("startDate", getDate());
         param.put("endDate", getDateIncrement(Integer.parseInt(increment)));
-        param.put("within", miles);
+        param.put("within", "25mi");
         param.put("page", "1");
 
         //execute the parse call
         new MyTask().execute();
-
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EventInfo event = (EventInfo) adapterView.getItemAtPosition(i);
-                Intent j = new Intent(list2.this, EventPage.class);
-                j.putExtra("event", event);
-                startActivity(j);
-            }
-        });
 
         fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,8 +247,8 @@ public class list2 extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             pBar.setVisibility(View.GONE);
-            ListAdapter listAdapter = new MyCustomAdapter(list2.this, myEvents);
-            theListView.setAdapter(listAdapter);
+            mAdapter = new MyAdapter(list2.this, myEvents);
+            mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }
     }
