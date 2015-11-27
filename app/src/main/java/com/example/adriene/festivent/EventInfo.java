@@ -12,15 +12,15 @@ public class EventInfo implements Serializable{
     double latitude, longitude;
 
     public EventInfo(String eventName, String description, String startDate,
-                     String endTime, String url, String imageUrl){
+                     String endTime, String url, String imageUrl, double latitude, double longitude){
         this.eventName = eventName;
         this.description = description;
         this.startDate = startDate;
         this.endTime = endTime;
         this.url = url;
         this.imageUrl = imageUrl;
-        this.latitude = 0;
-        this.longitude = 0;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 

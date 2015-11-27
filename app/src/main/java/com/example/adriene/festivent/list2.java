@@ -236,7 +236,7 @@ public class list2 extends AppCompatActivity {
                         } else {
                             imageUrl = null;
                         }
-                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl));
+                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0));
                     }
                 }
             } catch (final Exception e) {

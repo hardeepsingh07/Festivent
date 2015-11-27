@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
@@ -26,12 +27,31 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.ParseCloud;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 public class map extends FragmentActivity implements OnMapReadyCallback {
+
+    private static final String TAG_EVENTS = "events";
+    private static final String TAG_NAME = "name";
+    private static final String TAG_TEXT = "text";
+    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_URL = "url";
+    private static final String TAG_START = "start";
+    private static final String TAG_LOCAL = "local";
+    private static final String TAG_END = "end";
+    private static final String TAG_LOGO = "logo";
 
     private GoogleMap mMap;
     private FloatingActionButton mFab, filterFab;
@@ -42,10 +62,15 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public GPS gps;
     public CameraUpdate location;
     public SharedPreferences prefs;
+    public String zipcode;
+    public HashMap<String, String> param = new HashMap<String, String>();
+    public JSONObject data;
+    public JSONArray events = null;
     public boolean Run = true, dataIncoming = false;
-    public HashMap<Marker, myMarker> markerHash;
-    public static ArrayList<myMarker> markerArray = new ArrayList<myMarker>();
+    public HashMap<Marker, EventInfo> markerHash;
+    public static ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
     public int radius = 1000;
+    public static double newLatitude, newLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +83,51 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         pBar = (ProgressBar) findViewById(R.id.pMap);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(map.this);
-        markerHash = new HashMap<Marker, myMarker>();
+        markerHash = new HashMap<Marker, EventInfo>();
 
 
         //get Shared Preferences
         try {
+            GPS gps = new GPS(map.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
+            gps.convertGEO(latitude,longitude);
+            zipcode = gps.getZipcode();
+            Toast.makeText(map.this, zipcode, Toast.LENGTH_SHORT).show();
             dataIncoming = true;
         } catch (Exception e) {
             Toast.makeText(map.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             latitude = 0.0;
             longitude = 0.0;
         }
+
+        //get desired date and settings
+        String miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
+        String temp = prefs.getString("time", "1 Day");
+        String increment;
+        if(temp.endsWith("Day") || temp.endsWith("Days")) {
+            increment = temp.substring(0,1);
+        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
+            increment = temp.substring(0,1);
+            int t = Integer.parseInt(increment);
+            t *= 7;
+            increment = t + "";
+        } else {
+            increment = temp.substring(0,1);
+            int t = Integer.parseInt(increment);
+            t *= 30;
+            increment = t + "";
+        }
+
+        //Prepare the Hash
+        param.put("location", zipcode);
+        param.put("startDate", getDate());
+        param.put("endDate", getDateIncrement(Integer.parseInt(increment)));
+        param.put("within", miles);
+        param.put("page", "1");
+
+        //execute the parse call
+        new MyTask().execute();
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +156,28 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    public String getDate() {
+        String result = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        result += sdf.format(new Date());
+        return result;
+    }
+
+    public String getDateIncrement(int increment) {
+        String result = "";
+        String current = getDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(sdf.parse(current));
+            c.add(Calendar.DATE, increment);
+            result += sdf.format(c.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
@@ -135,14 +214,9 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         @Override
         public void onMapLoaded() {
             //clean the array from previous values
-            markerArray.clear();
-
-            //add my current location first
-            markerArray.add(new myMarker("You are here!", "You current location", latitude, longitude, 0.0));
+            myEvents.clear();
 
             //Show events data
-            findRandomPoints(latitude, longitude, radius);
-            plotMarkers();
             mMap.setOnInfoWindowClickListener(listenClick);
             mMap.animateCamera(location);
             pBar.setVisibility(View.INVISIBLE);
@@ -152,16 +226,15 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public GoogleMap.OnInfoWindowClickListener listenClick = new GoogleMap.OnInfoWindowClickListener() {
         @Override
         public void onInfoWindowClick(Marker marker) {
-            Intent i = new Intent(map.this, EventPage.class);
-            i.putExtra("latitude", marker.getPosition().latitude + "");
-            i.putExtra("longitude", marker.getPosition().longitude + "");
-            startActivity(i);
+            EventInfo event = markerHash.get(marker);
+            Intent j = new Intent(map.this, EventPage.class);
+            j.putExtra("event", event);
+            startActivity(j);
         }
     };
 
     //Create Random Geo Points
     public static void findRandomPoints(double lat, double log, int radius) {
-        for(int i = 0; i < 6; i++) {
             Random random = new Random();
             // Convert radius from meters to degrees
             double radiusInDegrees = radius / 111000f;
@@ -174,22 +247,19 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
 
             // Adjust the x-coordinate for the shrinking of the east-west distances
             double new_x = x / Math.cos(log);
-            double newLatitude = new_x + lat;
-            double newLongitude = y + log;
-            markerArray.add(new myMarker("Title" + random.nextInt(100),
-                    "Description" + random.nextInt(100), newLatitude, newLongitude, 0.0));
-        }
+            newLatitude = new_x + lat;
+            newLongitude = y + log;
     }
 
     //Plot the Markers using HashMap
     public void plotMarkers()  {
         mMap.clear();
-        if(markerArray.size() > 0) {
-            for(myMarker marker: markerArray) {
+        if(myEvents.size() > 0) {
+            for(EventInfo event: myEvents) {
                 MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(marker.getLatitude(), marker.getLongitude()));
+                        .position(new LatLng(event.getLatitude(), event.getLongitude()));
                 Marker currentMarker = mMap.addMarker(markerOptions);
-                markerHash.put(currentMarker, marker);
+                markerHash.put(currentMarker, event);
                 mMap.setInfoWindowAdapter(new MarkerAdapter(map.this, markerHash));
             }
         }
@@ -225,5 +295,79 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                     }
                 });
         dialog.create().show();
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
+
+                if(data != null) {
+                    //Get JSON Array node
+                    events = data.getJSONArray(TAG_EVENTS);
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(map.this, events.length() + "" , Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    //loop through each event
+                    for (int i = 0; i < events.length(); i++) {
+                        JSONObject e = events.getJSONObject(i);
+
+                        //get name object from  list
+                        JSONObject name = e.getJSONObject(TAG_NAME);
+                        String eventName = name.getString(TAG_TEXT);
+
+                        JSONObject description = e.getJSONObject(TAG_DESCRIPTION);
+                        String desc = description.getString(TAG_TEXT);
+                        String url = e.getString(TAG_URL);
+                        if(desc == null) {
+                            desc = "No Description";
+                        }
+
+                        if(url == null) {
+                            url = "Website not provided";
+                        }
+
+                        //get startTime object
+                        JSONObject start = e.getJSONObject(TAG_START);
+                        String startTime = start.getString(TAG_LOCAL);
+
+                        //get endTime Object
+                        JSONObject end = e.getJSONObject(TAG_END);
+                        String endTime = end.getString(TAG_LOCAL);
+
+                        //get logo object
+                        String imageUrl;
+                        if (!e.isNull("logo")) {
+                            JSONObject logo = e.getJSONObject(TAG_LOGO);
+                            imageUrl = logo.getString(TAG_URL);
+                        } else {
+                            imageUrl = null;
+                        }
+                        findRandomPoints(latitude, longitude, radius);
+                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, newLatitude, newLongitude));
+                    }
+                }
+            } catch (final Exception e) {
+                final String s = e.toString();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(map.this, s , Toast.LENGTH_SHORT).show();
+                    }
+                });
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            pBar.setVisibility(View.GONE);
+            plotMarkers();
+            super.onPostExecute(aVoid);
+        }
     }
 }

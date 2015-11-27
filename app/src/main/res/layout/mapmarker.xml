@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent">
 
@@ -17,7 +17,7 @@
         android:layout_alignBottom="@+id/marketDes" />
 
     <TextView
-        android:layout_width="150dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="markerTitle"
@@ -25,24 +25,32 @@
         android:id="@+id/markerTitle"
         android:typeface="serif"
         android:textColor="#3F51B5"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textStyle="normal"
+        android:textSize="12dp"
+        android:gravity="left"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/markerImage"
-        android:layout_toEndOf="@+id/markerImage"
-        android:textStyle="normal" />
+        android:layout_alignRight="@+id/marketDes"
+        android:layout_alignEnd="@+id/marketDes" />
 
     <TextView
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="markerDes"
         android:background="@android:color/transparent"
         android:id="@+id/marketDes"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:typeface="serif"
         android:textColor="#3F51B5"
-        android:layout_below="@+id/markerTitle"
-        android:layout_alignRight="@+id/markerTitle"
-        android:layout_alignEnd="@+id/markerTitle"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:textSize="10dp"
+        android:layout_below="@+id/markerDist"
+        android:layout_toRightOf="@+id/markerImage"
+        android:layout_toEndOf="@+id/markerImage" />
 
     <TextView
         android:layout_width="35dp"
@@ -55,7 +63,8 @@
         android:typeface="serif"
         android:textStyle="normal"
         android:textColor="#3F51B5"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/markerTitle"
-        android:layout_alignEnd="@+id/markerTitle" />
+        android:textSize="10dp"
+        android:layout_alignBottom="@+id/markerTitle"
+        android:layout_toRightOf="@+id/markerTitle"
+        android:layout_toEndOf="@+id/markerTitle" />
 </RelativeLayout>
