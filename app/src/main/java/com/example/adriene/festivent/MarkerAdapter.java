@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,9 +58,12 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
         EventInfo e = markerHash.get(marker);
 
         final ImageView markerIcon = (ImageView) v.findViewById(R.id.markerImage);
-        TextView markerTitle = (TextView) v.findViewById(R.id.markerTitle);
+        final TextView markerTitle = (TextView) v.findViewById(R.id.markerTitle);
         TextView markerDescription = (TextView) v.findViewById(R.id.marketDes);
         TextView distance = (TextView) v.findViewById(R.id.markerDist);
+        final ProgressBar pBar = (ProgressBar) v.findViewById(R.id.pMarBar);
+        pBar.setVisibility(View.GONE);
+        markerIcon.setVisibility(View.GONE);
 
         //markerIcon.setImageBitmap(m.getIcon());
         markerTitle.setText(e.getEventName() + "");
@@ -73,25 +77,25 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
             imageLoader.displayImage(url, markerIcon, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
-                    //pBar.setVisibility(View.VISIBLE);
+                    pBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
-                    //pBar.setVisibility(View.GONE);
+                    pBar.setVisibility(View.GONE);
                     markerIcon.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                     markerIcon.setImageBitmap(bitmap);
-                    //pBar.setVisibility(View.GONE);
+                    pBar.setVisibility(View.GONE);
                     markerIcon.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingCancelled(String s, View view) {
-                    //pBar.setVisibility(View.GONE);
+                    pBar.setVisibility(View.GONE);
                 }
             });
         }

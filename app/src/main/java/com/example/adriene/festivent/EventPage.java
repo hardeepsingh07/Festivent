@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +66,6 @@ public class EventPage extends AppCompatActivity {
         address = (TextView) findViewById(R.id.textAddress);
         website = (TextView) findViewById(R.id.textUrl);
         description = (TextView) findViewById(R.id.textDescription);
-        description.setMovementMethod(new ScrollingMovementMethod());
 
         startTime.setText(format(sTime));
         website.setText(url);
