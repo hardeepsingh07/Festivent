@@ -16,6 +16,8 @@ import android.widget.Toast;
 public class Settings extends AppCompatActivity {
     private Switch mySwitch;
     public SharedPreferences prefs;
+    public boolean switchState;
+    public String indexMiles, indexTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,12 @@ public class Settings extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(Settings.this);
         mySwitch = (Switch) findViewById(R.id.switch_default);
+        if(prefs.getString("dialogChoice", "") == "map") {
+            mySwitch.setChecked(true);
+        } else {
+            mySwitch.setChecked(false);
+        }
+
         mySwitch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,

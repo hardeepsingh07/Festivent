@@ -24,11 +24,11 @@
         android:text="Time:"
         android:id="@+id/time_text_view"
         android:textSize="20dp"
-        android:layout_below="@+id/default_text_view"
+        android:layout_marginTop="26dp"
+        android:textStyle="bold"
+        android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="51dp"
-        android:textStyle="bold" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,20 +46,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/switch_default"
-        android:layout_above="@+id/time_text_view"
-        android:layout_centerHorizontal="true"
-        android:checked="true" />
+        android:checked="true"
+        android:layout_alignBaseline="@+id/default_text_view"
+        android:layout_alignBottom="@+id/default_text_view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Spinner
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:id="@+id/spinner_time"
         android:spinnerMode="dropdown"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/time_text_view"
-        android:layout_alignLeft="@+id/switch_default"
-        android:layout_alignStart="@+id/switch_default" />
+        android:layout_alignRight="@+id/switch_default"
+        android:layout_alignEnd="@+id/switch_default" />
 
     <Spinner
         android:layout_width="wrap_content"
