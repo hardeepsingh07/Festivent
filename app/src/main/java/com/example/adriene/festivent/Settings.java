@@ -27,11 +27,11 @@ public class Settings extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(Settings.this);
         mySwitch = (Switch) findViewById(R.id.switch_default);
-        if(prefs.getString("dialogChoice", "") == "map") {
+        /*if(prefs.getString("dialogChoice", "") == "map") {
             mySwitch.setChecked(true);
         } else {
             mySwitch.setChecked(false);
-        }
+        }*/
 
         mySwitch.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override

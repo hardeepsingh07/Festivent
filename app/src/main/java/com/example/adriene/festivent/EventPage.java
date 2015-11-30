@@ -6,6 +6,7 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,7 +34,6 @@ public class EventPage extends AppCompatActivity {
     public TextView startTime, address, website, description;
     public String title, describe, sTime, eTime, adresses, url, imageUrl;
     public EventInfo event;
-    public Bitmap image;
     public ImageView picture;
 
     @Override
@@ -53,25 +53,24 @@ public class EventPage extends AppCompatActivity {
         url = event.getUrl();
         imageUrl = event.getImageUrl();
 
-        //load the image from url
-        loadImage();
-
         //intialize the top toolbar and set title
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolbar.setTitle(title);
-        setSupportActionBar(toolbar);
+        toolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
+        toolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
 
-        picture = (ImageView) findViewById(R.id.backImage);
+        picture = (ImageView) findViewById(R.id.bgheader);
         startTime = (TextView)  findViewById(R.id.textTime);
         address = (TextView) findViewById(R.id.textAddress);
         website = (TextView) findViewById(R.id.textUrl);
         description = (TextView) findViewById(R.id.textDescription);
 
+        //load the image from url
+        loadImage();
+
         startTime.setText(format(sTime));
         website.setText(url);
         description.setText(describe);
-        picture.setImageBitmap(image);
-
 
 
         try {
@@ -153,7 +152,7 @@ public class EventPage extends AppCompatActivity {
         imageLoader.loadImage(imageUrl, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                image = loadedImage;
+                picture.setImageBitmap(loadedImage);
             }
         });
     }

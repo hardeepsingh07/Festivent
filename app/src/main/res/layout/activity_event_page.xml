@@ -12,17 +12,23 @@
 
         <android.support.design.widget.CollapsingToolbarLayout android:id="@+id/toolbar_layout"
             android:fitsSystemWindows="true" android:layout_width="match_parent"
+            app:expandedTitleMarginStart="10dp"
+            app:expandedTitleMarginEnd="10dp"
             android:layout_height="match_parent" app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="?attr/colorPrimary">
+
+            <ImageView
+                android:id="@+id/bgheader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                android:background="@drawable/logo"
+                app:layout_collapseMode="pin" />
 
             <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
                 android:layout_height="?attr/actionBarSize" android:layout_width="match_parent"
                 app:layout_collapseMode="pin" app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/backImage"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

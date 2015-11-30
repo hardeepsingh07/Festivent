@@ -93,7 +93,6 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
             gps.convertGEO(latitude,longitude);
             zipcode = gps.getZipcode();
-            Toast.makeText(map.this, zipcode, Toast.LENGTH_SHORT).show();
             dataIncoming = true;
         } catch (Exception e) {
             Toast.makeText(map.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
@@ -127,7 +126,18 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         param.put("page", "1");
 
         //execute the parse call
-        new MyTask().execute();
+        if(zipcode != null) {
+            new MyTask().execute();
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        } else {
+            Toast.makeText(map.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(map.this, Main.class);
+            startActivity(i);
+            finish();
+        }
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,10 +162,6 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     public String getDate() {
@@ -306,11 +312,6 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                 if(data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(map.this, events.length() + "" , Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
                     //loop through each event
                     for (int i = 0; i < events.length(); i++) {

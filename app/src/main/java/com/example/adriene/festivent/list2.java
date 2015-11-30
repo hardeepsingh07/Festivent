@@ -89,7 +89,6 @@ public class list2 extends AppCompatActivity {
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
             gps.convertGEO(latitude,longitude);
             zipcode = gps.getZipcode();
-            Toast.makeText(list2.this, zipcode, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             latitude = 0.0;
             longitude = 0.0;
@@ -122,7 +121,14 @@ public class list2 extends AppCompatActivity {
         param.put("page", "1");
 
         //execute the parse call
-        new MyTask().execute();
+        if(zipcode != null) {
+            new MyTask().execute();
+        } else {
+            Toast.makeText(list2.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(list2.this, Main.class);
+            startActivity(i);
+            finish();
+        }
 
         fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,11 +201,6 @@ public class list2 extends AppCompatActivity {
                 if(data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(list2.this, events.length() + "" , Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
                     //loop through each event
                     for (int i = 0; i < events.length(); i++) {

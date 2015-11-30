@@ -52,7 +52,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             EventInfo event = (EventInfo) myEvents.get(getPosition());
-            Toast.makeText(context, event.eventName, Toast.LENGTH_SHORT).show();
             Intent j = new Intent(context, EventPage.class);
             j.putExtra("event", event);
             context.startActivity(j);
