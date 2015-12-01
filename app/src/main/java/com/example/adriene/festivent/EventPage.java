@@ -2,18 +2,14 @@ package com.example.adriene.festivent;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +27,7 @@ public class EventPage extends AppCompatActivity {
 
     public double latitude;
     public double longitude;
-    public TextView startTime, address, website, description;
+    public TextView startTime, address, website, description, titleText;
     public String title, describe, sTime, eTime, adresses, url, imageUrl;
     public EventInfo event;
     public ImageView picture;
@@ -39,6 +35,7 @@ public class EventPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_event_page);
 
         //Intialize Image Loader
@@ -53,12 +50,13 @@ public class EventPage extends AppCompatActivity {
         url = event.getUrl();
         imageUrl = event.getImageUrl();
 
-        //intialize the top toolbar and set title
+       /* //intialize the top toolbar and set title
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolbar.setTitle(title);
         toolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
-        toolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
+        toolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);*/
 
+        titleText = (TextView) findViewById(R.id.titleText);
         picture = (ImageView) findViewById(R.id.bgheader);
         startTime = (TextView)  findViewById(R.id.textTime);
         address = (TextView) findViewById(R.id.textAddress);
@@ -68,6 +66,7 @@ public class EventPage extends AppCompatActivity {
         //load the image from url
         loadImage();
 
+        titleText.setText(title);
         startTime.setText(format(sTime));
         website.setText(url);
         description.setText(describe);
@@ -123,13 +122,6 @@ public class EventPage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(browserIntent);
-            }
-        });
-
-        description.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(EventPage.this, "Description was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
     }

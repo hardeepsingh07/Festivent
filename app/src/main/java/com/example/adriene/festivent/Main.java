@@ -41,7 +41,10 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +66,9 @@ public class Main extends AppCompatActivity
     public CharSequence primaryText = "";
     public CharSequence secondaryText = "";
     private ArrayList<MainLocatioonInfo> recentItems = new ArrayList<>();
+    public ListView mListView;
     public ArrayAdapter<MainLocatioonInfo> adapterForList;
+    public Gson gson = new Gson();
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
 
@@ -90,12 +95,10 @@ public class Main extends AppCompatActivity
         fab = (FloatingActionButton) findViewById(R.id.fab);
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (ImageButton) findViewById(R.id.sIButton);
-        ListView mListView = (ListView) findViewById(R.id.mListView);
-        adapterForList = new mListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
+        mListView = (ListView) findViewById(R.id.mListView);
         TextView header = new TextView(Main.this);
         header.setText("Recent Searches: ");
         mListView.addHeaderView(header);
-        mListView.setAdapter(adapterForList);
 
         //list to click on ListView
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -205,6 +208,26 @@ public class Main extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        String jsonRecentItems = gson.toJson(recentItems);
+        prefs.edit().putString("recentItems", jsonRecentItems).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Type type = new TypeToken<ArrayList<MainLocatioonInfo>>(){}.getType();
+        String jsonRecentItems = prefs.getString("recentItems", "");
+        if(!jsonRecentItems.equals("")) {
+            recentItems.clear();
+            recentItems = gson.fromJson(jsonRecentItems, type);
+        }
+        adapterForList = new mListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
+        mListView.setAdapter(adapterForList);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
@@ -233,7 +256,7 @@ public class Main extends AppCompatActivity
         int size = recentItems.size();
         boolean check = contains(item);
         if(!check) {
-            if (size >= 3) {
+            if (size >= 5) {
                 recentItems.remove(size - 1);
                 recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
             } else {
