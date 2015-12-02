@@ -2,7 +2,9 @@ package com.example.adriene.festivent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -100,9 +102,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         String formatted = format.format(newDate);
         holder.date.setText(formatted);
 
-
-        holder.imageView.setVisibility(View.GONE);
-        //pBar.setVisibility(View.GONE);
         String url = myEvents.get(position).getImageUrl();
 
         if (url != null) {
@@ -110,25 +109,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             imageLoader.displayImage(url, holder.imageView, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
-                    //pBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
-                    //pBar.setVisibility(View.GONE);
                     holder.imageView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                     holder.imageView.setImageBitmap(bitmap);
-                    //pBar.setVisibility(View.GONE);
                     holder.imageView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onLoadingCancelled(String s, View view) {
-                    //pBar.setVisibility(View.GONE);
                 }
             });
         }

@@ -23,7 +23,7 @@
                 android:id="@+id/icon"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:src="@drawable/ic_setting_light"
+                android:src="@drawable/img"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"

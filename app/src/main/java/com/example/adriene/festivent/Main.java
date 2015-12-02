@@ -13,7 +13,9 @@ import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -80,6 +82,7 @@ public class Main extends AppCompatActivity
 
         //get Preference Manager
         prefs = PreferenceManager.getDefaultSharedPreferences(Main.this);
+
 
         //setup place lookup client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
