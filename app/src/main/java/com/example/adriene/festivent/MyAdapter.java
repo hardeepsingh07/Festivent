@@ -45,9 +45,9 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder> {
         //true for List2.java call and false for SavedEvent.java call
         this.call = call;
         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.ic_pause_light)
-                .showImageForEmptyUri(R.drawable.ic_play_light)
-                .showImageOnFail(R.drawable.ic_setting_light)
+                .showImageOnLoading(R.drawable.logo)
+                .showImageForEmptyUri(R.drawable.logo)
+                .showImageOnFail(R.drawable.logo)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .considerExifParams(true)
