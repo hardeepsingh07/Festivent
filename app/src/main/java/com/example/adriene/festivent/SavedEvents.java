@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ public class SavedEvents extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     public ProgressBar progressBar;
+    public TextView noEventsMessage;
     public ArrayList<EventInfo> sSEvents = new ArrayList<EventInfo>();
     public Gson gson = new Gson();
     public SharedPreferences prefs;
@@ -33,6 +35,8 @@ public class SavedEvents extends AppCompatActivity {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(SavedEvents.this);
         progressBar = (ProgressBar) findViewById(R.id.savedPBar);
+        noEventsMessage = (TextView) findViewById(R.id.noEvents);
+        noEventsMessage.setVisibility(View.GONE);
 
         //recyclerview for listview
         mRecyclerView = (RecyclerView) findViewById(R.id.saved_recycleView);
@@ -57,6 +61,11 @@ public class SavedEvents extends AppCompatActivity {
         if(!savedEvents.equals("")) {
             sSEvents.clear();
             sSEvents = gson.fromJson(savedEvents, type);
+            if(sSEvents.isEmpty()) {
+                noEventsMessage.setVisibility(View.VISIBLE);
+            }
+        } else {
+            noEventsMessage.setVisibility(View.VISIBLE);
         }
         mAdapter = new MyAdapter(SavedEvents.this, sSEvents, null, false);
         mRecyclerView.setAdapter(mAdapter);
