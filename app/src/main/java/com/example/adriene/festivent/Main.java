@@ -214,7 +214,7 @@ public class Main extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         String jsonRecentItems = gson.toJson(recentItems);
-        prefs.edit().putString("recentItems", jsonRecentItems).commit();
+        prefs.edit().putString("recentItems", jsonRecentItems).apply();
     }
 
     @Override
@@ -293,9 +293,10 @@ public class Main extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(Main.this, Settings.class);
             startActivity(i);
+        } else if (id == R.id.nav_save) {
+            Intent i = new Intent(Main.this, SavedEvents.class);
+            startActivity(i);
         } else if (id == R.id.nav_share) {
-            Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_send) {
             Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
         }
 

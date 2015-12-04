@@ -1,6 +1,8 @@
 package com.example.adriene.festivent;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -29,40 +31,19 @@ import java.util.Date;
 /**
  * Created by Hardeep Singh on 11/25/2015.
  */
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private static ArrayList<EventInfo> myEvents;
+public class MyAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public ArrayList<EventInfo> myEvents;
     public DisplayImageOptions options;
+    public ArrayList<EventInfo> savedEvents;
     public static Context context;
+    public boolean call;
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView title;
-        public TextView description;
-        public TextView date;
-        public ImageView imageView;
-        public CardView cv;
-
-        public ViewHolder(View v) {
-            super(v);
-            v.setOnClickListener(this);
-            cv = (CardView) v.findViewById(R.id.card_view);
-            title = (TextView) v.findViewById(R.id.label);
-            description = (TextView) v.findViewById(R.id.descriptionTextView);
-            date = (TextView) v.findViewById(R.id.dateTextView);
-            imageView = (ImageView) v.findViewById(R.id.icon);
-        }
-
-        @Override
-        public void onClick(View v) {
-            EventInfo event = (EventInfo) myEvents.get(getPosition());
-            Intent j = new Intent(context, EventPage.class);
-            j.putExtra("event", event);
-            context.startActivity(j);
-        }
-    }
-
-    public MyAdapter(Context context, ArrayList<EventInfo> myEvents) {
+    public MyAdapter(Context context, ArrayList<EventInfo> myEvents, ArrayList<EventInfo> savedEvents, boolean call) {
         this.myEvents = myEvents;
+        this.savedEvents = savedEvents;
         this.context = context;
+        //true for List2.java call and false for SavedEvent.java call
+        this.call = call;
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.ic_pause_light)
                 .showImageForEmptyUri(R.drawable.ic_play_light)
@@ -76,7 +57,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
@@ -88,6 +69,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.setClickListener(new ViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position, boolean isLongClick) {
+                final EventInfo event = (EventInfo) myEvents.get(position);
+                if(call) {
+                    if (isLongClick) {
+                        saveEventDialog(event);
+                    } else {
+                        Intent j = new Intent(context, EventPage.class);
+                        j.putExtra("event", event);
+                        context.startActivity(j);
+                    }
+                } else {
+                    if (isLongClick) {
+                        deleteEventDialog(event, position);
+                    } else {
+                        Intent j = new Intent(context, EventPage.class);
+                        j.putExtra("event", event);
+                        context.startActivity(j);
+                    }
+                }
+            }
+        });
+
         holder.title.setText(myEvents.get(position).getEventName());
         holder.description.setText(myEvents.get(position).getDescription());
 
@@ -140,4 +145,51 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+    public void addItem(int position, EventInfo data) {
+        myEvents.add(position, data);
+        notifyItemInserted(position);
+    }
+
+    public void removeItem(int position) {
+        myEvents.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void saveEventDialog(final EventInfo event) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("Would you like to save this event?");
+        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                savedEvents.add(event);
+                Toast.makeText(context, "Events Saved!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.create().show();
+    }
+
+    public void deleteEventDialog(final EventInfo event, final int position) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle("Are you sure you want to remove this event?");
+        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeItem(position);
+                Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.create().show();
+    }
 }

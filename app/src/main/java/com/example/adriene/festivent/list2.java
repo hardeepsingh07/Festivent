@@ -21,12 +21,15 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.parse.ParseCloud;
 
 import org.json.JSONArray;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,6 +62,9 @@ public class list2 extends AppCompatActivity {
     public JSONArray events = null;
     public ProgressBar pBar;
     public ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
+    public ArrayList<EventInfo> sEvents = new ArrayList<EventInfo>();
+    public Gson gson = new Gson();
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -68,13 +74,12 @@ public class list2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list2);
 
-
+        //Intialize components
         pBar = (ProgressBar) findViewById(R.id.pBar);
         pBar.setVisibility(View.VISIBLE);
         fabFilter = (FloatingActionButton) findViewById(R.id.filterFabList);
         prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
-        //theListView = (ListView) findViewById(R.id.listView);
-        prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
+
 
         //recyclerview for listview
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -137,6 +142,25 @@ public class list2 extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        String savedEvents = gson.toJson(sEvents);
+        prefs.edit().putString("savedEvents", savedEvents).apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Type type = new TypeToken<ArrayList<EventInfo>>(){}.getType();
+        String savedEvents = prefs.getString("savedEvents", "");
+        if(!savedEvents.equals("")) {
+            sEvents.clear();
+            sEvents = gson.fromJson(savedEvents, type);
+        }
+    }
+
 
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
@@ -255,7 +279,7 @@ public class list2 extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             pBar.setVisibility(View.GONE);
-            mAdapter = new MyAdapter(list2.this, myEvents);
+            mAdapter = new MyAdapter(list2.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }

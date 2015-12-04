@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.adriene.festivent" >
+    package="com.example.adriene.festivent">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -28,18 +28,16 @@
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".Welcome" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".Welcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,8 +45,7 @@
             android:name=".Main"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" >
-        </activity>
+            android:windowSoftInputMode="stateHidden" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -63,17 +60,14 @@
 
         <activity
             android:name=".map"
-            android:label="@string/title_activity_map" >
-        </activity>
-        <activity android:name=".list2" >
-        </activity>
+            android:label="@string/title_activity_map" />
+        <activity android:name=".list2" />
         <activity
             android:name=".EventPage"
             android:label="@string/title_activity_event_page"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity android:name=".Settings" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Settings" />
+        <activity android:name=".SavedEvents"></activity>
     </application>
 
 </manifest>
