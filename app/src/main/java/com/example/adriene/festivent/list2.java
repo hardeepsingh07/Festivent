@@ -8,15 +8,15 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 
-public class list2 extends AppCompatActivity {
+public class list2 extends ActionBarActivity implements MyAdapter.ViewHolder.ClickListener {
 
     private static final String TAG_EVENTS = "events";
     private static final String TAG_NAME = "name";
@@ -68,6 +68,9 @@ public class list2 extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ActionModeCallback actionModeCallback = new ActionModeCallback();
+    private ActionMode actionMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,7 @@ public class list2 extends AppCompatActivity {
             GPS gps = new GPS(list2.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
-            gps.convertGEO(latitude,longitude);
+            gps.convertGEO(latitude, longitude);
             zipcode = gps.getZipcode();
         } catch (Exception e) {
             latitude = 0.0;
@@ -100,18 +103,18 @@ public class list2 extends AppCompatActivity {
         }
 
         //get desired date and settings
-        String miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
+        String miles = prefs.getString("miles", "25 Miles").substring(0, 3).trim() + "mi";
         String temp = prefs.getString("time", "1 Day");
         String increment;
-        if(temp.endsWith("Day") || temp.endsWith("Days")) {
-            increment = temp.substring(0,1);
-        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
-            increment = temp.substring(0,1);
+        if (temp.endsWith("Day") || temp.endsWith("Days")) {
+            increment = temp.substring(0, 1);
+        } else if (temp.endsWith("Week") || temp.endsWith("Weeks")) {
+            increment = temp.substring(0, 1);
             int t = Integer.parseInt(increment);
             t *= 7;
             increment = t + "";
         } else {
-            increment = temp.substring(0,1);
+            increment = temp.substring(0, 1);
             int t = Integer.parseInt(increment);
             t *= 30;
             increment = t + "";
@@ -126,7 +129,7 @@ public class list2 extends AppCompatActivity {
         param.put("page", "1");
 
         //execute the parse call
-        if(zipcode != null) {
+        if (zipcode != null) {
             new MyTask().execute();
         } else {
             Toast.makeText(list2.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
@@ -153,9 +156,10 @@ public class list2 extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Type type = new TypeToken<ArrayList<EventInfo>>(){}.getType();
+        Type type = new TypeToken<ArrayList<EventInfo>>() {
+        }.getType();
         String savedEvents = prefs.getString("savedEvents", "");
-        if(!savedEvents.equals("")) {
+        if (!savedEvents.equals("")) {
             sEvents.clear();
             sEvents = gson.fromJson(savedEvents, type);
         }
@@ -164,7 +168,7 @@ public class list2 extends AppCompatActivity {
 
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
-        final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
+        final String[] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(list2.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
@@ -216,13 +220,42 @@ public class list2 extends AppCompatActivity {
         return result;
     }
 
+    @Override
+    public void onItemClick(int position) {
+        if (actionMode != null) {
+            toggleSelecton(position);
+        }
+    }
+
+    private void toggleSelection(int position) {
+        mAdapter.toggleSelection(position);
+        int count = mAdapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+    }
+
+    @Override
+    public boolean onItemLongClick(int position) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+        }
+
+        toggleSelection(position);
+        return true;
+    }
+
     private class MyTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
 
-                if(data != null) {
+                if (data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
 
@@ -237,11 +270,11 @@ public class list2 extends AppCompatActivity {
                         JSONObject description = e.getJSONObject(TAG_DESCRIPTION);
                         String desc = description.getString(TAG_TEXT);
                         String url = e.getString(TAG_URL);
-                        if(desc == null) {
+                        if (desc == null) {
                             desc = "No Description";
                         }
 
-                        if(url == null) {
+                        if (url == null) {
                             url = "Website not provided";
                         }
 
@@ -268,7 +301,7 @@ public class list2 extends AppCompatActivity {
                 final String s = e.toString();
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(list2.this, s , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(list2.this, s, Toast.LENGTH_SHORT).show();
                     }
                 });
                 e.printStackTrace();
@@ -279,9 +312,42 @@ public class list2 extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             pBar.setVisibility(View.GONE);
-            mAdapter = new MyAdapter(list2.this, myEvents, sEvents, true);
+            mAdapter = new MyAdapter(list2.this, list2.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
+        }
+    }
+
+    private class ActionModeCallback implements ActionMode.Callback {
+        private final String TAG = ActionModeCallback.class.getSimpleName();
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+
+            return false;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_remove:
+                    Toast.makeText(list2.this, "Remove Option", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mAdapter.clearSelection();
+            actionMode = null;
         }
     }
 }

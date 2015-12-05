@@ -233,7 +233,7 @@ public class Main extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE) {
+        if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && data != null) {
             ArrayList<String> temp = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             if(temp != null) {
                 ac.setText(temp.get(0));
