@@ -128,6 +128,10 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         //execute the parse call
         if(zipcode != null) {
             new MyTask().execute();
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
         } else {
             Toast.makeText(map.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(map.this, Main.class);
@@ -158,10 +162,6 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     public String getDate() {
