@@ -9,8 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,17 +31,14 @@ import java.util.Date;
 /**
  * Created by Hardeep Singh on 11/25/2015.
  */
-public class MyAdapter extends SelectAdapter<MyAdapter.ViewHolder> {
+public class MyAdapter extends RecyclerView.Adapter<ViewHolder> {
     public ArrayList<EventInfo> myEvents;
     public DisplayImageOptions options;
     public ArrayList<EventInfo> savedEvents;
     public static Context context;
     public boolean call;
-    public ViewHolder.ClickListener clickListener;
 
-    public MyAdapter(Context context, ViewHolder.ClickListener clickListener, ArrayList<EventInfo> myEvents, ArrayList<EventInfo> savedEvents, boolean call) {
-        super();
-        this.clickListener = clickListener;
+    public MyAdapter(Context context, ArrayList<EventInfo> myEvents, ArrayList<EventInfo> savedEvents, boolean call) {
         this.myEvents = myEvents;
         this.savedEvents = savedEvents;
         this.context = context;
@@ -62,17 +57,42 @@ public class MyAdapter extends SelectAdapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                   int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.rowlayout, parent, false);
-        return new ViewHolder(v, clickListener);
+        ViewHolder vh = new ViewHolder(v);
+        return vh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        // holder.selectOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.GONE);
+        holder.setClickListener(new ViewHolder.ClickListener() {
+            @Override
+            public void onClick(View v, int position, boolean isLongClick) {
+                final EventInfo event = (EventInfo) myEvents.get(position);
+                if(call) {
+                    if (isLongClick) {
+                        saveEventDialog(event);
+                    } else {
+                        Intent j = new Intent(context, EventPage.class);
+                        j.putExtra("event", event);
+                        context.startActivity(j);
+                    }
+                } else {
+                    if (isLongClick) {
+                        deleteEventDialog(event, position);
+                    } else {
+                        Intent j = new Intent(context, EventPage.class);
+                        j.putExtra("event", event);
+                        context.startActivity(j);
+                    }
+                }
+            }
+        });
+
         holder.title.setText(myEvents.get(position).getEventName());
         holder.description.setText(myEvents.get(position).getDescription());
 
@@ -171,51 +191,5 @@ public class MyAdapter extends SelectAdapter<MyAdapter.ViewHolder> {
             }
         });
         dialog.create().show();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        public TextView title;
-        public TextView description;
-        public TextView date;
-        public ImageView imageView;
-        public CardView cv;
-        public View selectedOverlay;
-
-        private ClickListener clickListener;
-
-        public ViewHolder(View v, ClickListener clickListener) {
-            super(v);
-            cv = (CardView) v.findViewById(R.id.card_view);
-            title = (TextView) v.findViewById(R.id.label);
-            description = (TextView) v.findViewById(R.id.descriptionTextView);
-            date = (TextView) v.findViewById(R.id.dateTextView);
-            imageView = (ImageView) v.findViewById(R.id.icon);
-
-
-            this.clickListener = clickListener;
-            v.setOnClickListener(this);
-            v.setOnLongClickListener(this);
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            //Pass false because single click
-            clickListener.onItemClick(getPosition());
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            //Pass true because long click
-            clickListener.onItemLongClick(getPosition());
-            return true;
-        }
-
-        //Interface which can be used by the Adapter
-        public interface ClickListener {
-            public void onItemClick(int position);
-            public boolean onItemLongClick(int position);
-        }
-
     }
 }
