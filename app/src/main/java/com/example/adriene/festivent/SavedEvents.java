@@ -43,32 +43,31 @@ public class SavedEvents extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         String savedEvents = gson.toJson(sSEvents);
-        prefs.edit().putString("savedEvents", savedEvents).apply();
+        prefs.edit().putString("savedEvents", savedEvents).commit();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         Type type = new TypeToken<ArrayList<EventInfo>>(){}.getType();
         String savedEvents = prefs.getString("savedEvents", "");
         if(!savedEvents.equals("")) {
             sSEvents.clear();
             sSEvents = gson.fromJson(savedEvents, type);
+            mAdapter = new MyAdapter(SavedEvents.this, sSEvents, null, false);
+            mRecyclerView.setAdapter(mAdapter);
+            progressBar.setVisibility(View.GONE);
             if(sSEvents.isEmpty()) {
                 noEventsMessage.setVisibility(View.VISIBLE);
             }
         } else {
             noEventsMessage.setVisibility(View.VISIBLE);
         }
-        mAdapter = new MyAdapter(SavedEvents.this, sSEvents, null, false);
-        mRecyclerView.setAdapter(mAdapter);
-        progressBar.setVisibility(View.GONE);
     }
 }

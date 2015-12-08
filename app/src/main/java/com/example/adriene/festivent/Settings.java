@@ -46,6 +46,7 @@ public class Settings extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         prefs.edit().remove("savedEvents").apply();
+                        Toast.makeText(Settings.this, "Events Cleared!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -58,9 +59,9 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        if (prefs.getString("dialogChoice", "") == "map") {
+        if (prefs.getString("dialogChoice", "").equals("map")) {
             mySwitch.setChecked(true);
-        } else if (prefs.getString("dialogChoice", "") == "list") {
+        } else if (prefs.getString("dialogChoice", "").equals("list")) {
             mySwitch.setChecked(false);
         }
 

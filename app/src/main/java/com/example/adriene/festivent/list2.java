@@ -147,12 +147,12 @@ public class list2 extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         String savedEvents = gson.toJson(sEvents);
-        prefs.edit().putString("savedEvents", savedEvents).apply();
+        prefs.edit().putString("savedEvents", savedEvents).commit();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         Type type = new TypeToken<ArrayList<EventInfo>>(){}.getType();
         String savedEvents = prefs.getString("savedEvents", "");
         if(!savedEvents.equals("")) {

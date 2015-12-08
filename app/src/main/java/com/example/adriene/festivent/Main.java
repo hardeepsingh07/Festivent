@@ -296,8 +296,6 @@ public class Main extends AppCompatActivity
         } else if (id == R.id.nav_save) {
             Intent i = new Intent(Main.this, SavedEvents.class);
             startActivity(i);
-        } else if (id == R.id.nav_share) {
-            Toast.makeText(Main.this, "Under Construction", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

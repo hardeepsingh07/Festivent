@@ -156,38 +156,44 @@ public class MyAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     public void saveEventDialog(final EventInfo event) {
+        final CharSequence [] options = new CharSequence []{"Save Event", "Share"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("Would you like to save this event?");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        dialog.setTitle("Options:");
+        dialog.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                savedEvents.add(event);
-                Toast.makeText(context, "Events Saved!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+                if (options[which].equals("Save Event")) {
+                    savedEvents.add(event);
+                    Toast.makeText(context, "Events Saved!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, event.getEventName() + ": " + event.getUrl());
+                    sendIntent.setType("text/plain");
+                    context.startActivity(sendIntent);
+                }
             }
         });
         dialog.create().show();
     }
 
     public void deleteEventDialog(final EventInfo event, final int position) {
+        final CharSequence [] options = new CharSequence []{"Delete Event", "Share"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle("Are you sure you want to remove this event?");
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        dialog.setTitle("Options:");
+        dialog.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeItem(position);
-                Toast.makeText(context, "Event Deleted", Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+                if(options[which].equals("Delete Event")) {
+                    removeItem(position);
+                    Toast.makeText(context, "Event Deleted!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, event.getEventName() + ": " + event.getUrl());
+                    sendIntent.setType("text/plain");
+                    context.startActivity(sendIntent);
+                }
             }
         });
         dialog.create().show();

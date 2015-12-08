@@ -221,7 +221,6 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         public void onMapLoaded() {
             //clean the array from previous values
             myEvents.clear();
-
             //Show events data
             mMap.setOnInfoWindowClickListener(listenClick);
             mMap.animateCamera(location);
@@ -235,6 +234,8 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             EventInfo event = markerHash.get(marker);
             Intent j = new Intent(map.this, EventPage.class);
             j.putExtra("event", event);
+            j.putExtra("latitude", latitude + "");
+            j.putExtra("longitude", longitude + "");
             startActivity(j);
         }
     };
