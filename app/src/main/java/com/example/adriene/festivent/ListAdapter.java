@@ -31,14 +31,14 @@ import java.util.Date;
 /**
  * Created by Hardeep Singh on 11/25/2015.
  */
-public class MyAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
     public ArrayList<EventInfo> myEvents;
     public DisplayImageOptions options;
     public ArrayList<EventInfo> savedEvents;
     public static Context context;
     public boolean call;
 
-    public MyAdapter(Context context, ArrayList<EventInfo> myEvents, ArrayList<EventInfo> savedEvents, boolean call) {
+    public ListAdapter(Context context, ArrayList<EventInfo> myEvents, ArrayList<EventInfo> savedEvents, boolean call) {
         this.myEvents = myEvents;
         this.savedEvents = savedEvents;
         this.context = context;

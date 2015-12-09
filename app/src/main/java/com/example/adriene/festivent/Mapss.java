@@ -1,7 +1,6 @@
 package com.example.adriene.festivent;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -41,7 +39,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
-public class map extends FragmentActivity implements OnMapReadyCallback {
+public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG_EVENTS = "events";
     private static final String TAG_NAME = "name";
@@ -82,20 +80,20 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         mFab = (FloatingActionButton) findViewById(R.id.mfab);
         pBar = (ProgressBar) findViewById(R.id.pMap);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        prefs = PreferenceManager.getDefaultSharedPreferences(map.this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(Mapss.this);
         markerHash = new HashMap<Marker, EventInfo>();
 
 
         //get Shared Preferences
         try {
-            GPS gps = new GPS(map.this);
+            GPS gps = new GPS(Mapss.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
             gps.convertGEO(latitude,longitude);
             zipcode = gps.getZipcode();
             dataIncoming = true;
         } catch (Exception e) {
-            Toast.makeText(map.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Mapss.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             latitude = 0.0;
             longitude = 0.0;
         }
@@ -129,8 +127,8 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         if(zipcode != null) {
             new MyTask().execute();
         } else {
-            Toast.makeText(map.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(map.this, Main.class);
+            Toast.makeText(Mapss.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(Mapss.this, Main.class);
             startActivity(i);
             finish();
         }
@@ -139,7 +137,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    gps = new GPS(map.this);
+                    gps = new GPS(Mapss.this);
                     gps.showSettingsAlert();
                     dataIncoming = false;
                 }
@@ -147,7 +145,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                 dataIncoming = false;
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
-                mapFragment.getMapAsync(map.this);
+                mapFragment.getMapAsync(Mapss.this);
             }
         });
 
@@ -158,7 +156,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        // Obtain the SupportMapFragment and get notified when the MyMap is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -215,7 +213,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         }
     };
 
-    //once have the data populate the map
+    //once have the data populate the Mapss
     public GoogleMap.OnMapLoadedCallback mapLoaded = new GoogleMap.OnMapLoadedCallback() {
         @Override
         public void onMapLoaded() {
@@ -232,7 +230,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
         @Override
         public void onInfoWindowClick(Marker marker) {
             EventInfo event = markerHash.get(marker);
-            Intent j = new Intent(map.this, EventPage.class);
+            Intent j = new Intent(Mapss.this, EventPage.class);
             j.putExtra("event", event);
             j.putExtra("latitude", latitude + "");
             j.putExtra("longitude", longitude + "");
@@ -267,7 +265,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                         .position(new LatLng(event.getLatitude(), event.getLongitude()));
                 Marker currentMarker = mMap.addMarker(markerOptions);
                 markerHash.put(currentMarker, event);
-                mMap.setInfoWindowAdapter(new MarkerAdapter(map.this, markerHash));
+                mMap.setInfoWindowAdapter(new MarkerAdapter(Mapss.this, markerHash));
             }
         }
     }
@@ -275,7 +273,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
         final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
-        AlertDialog.Builder dialog = new AlertDialog.Builder(map.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(Mapss.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
@@ -292,7 +290,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                 .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(map.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Mapss.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -357,7 +355,7 @@ public class map extends FragmentActivity implements OnMapReadyCallback {
                 final String s = e.toString();
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(map.this, s , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Mapss.this, s , Toast.LENGTH_SHORT).show();
                     }
                 });
                 e.printStackTrace();

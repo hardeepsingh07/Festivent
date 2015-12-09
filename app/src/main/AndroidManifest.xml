@@ -59,9 +59,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".map"
+            android:name=".Mapss"
             android:label="@string/title_activity_map" />
-        <activity android:name=".list2" />
+        <activity android:name=".List" />
         <activity
             android:name=".EventPage"
             android:label="@string/title_activity_event_page"

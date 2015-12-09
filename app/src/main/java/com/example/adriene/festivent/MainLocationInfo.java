@@ -3,12 +3,12 @@ package com.example.adriene.festivent;
 /**
  * Created by Hardeep Singh on 10/29/2015.
  */
-public class MainLocatioonInfo {
+public class MainLocationInfo {
     public String name;
     public double latitude;
     public double longitude;
 
-    public MainLocatioonInfo(String name, double latitude, double longitude) {
+    public MainLocationInfo(String name, double latitude, double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;

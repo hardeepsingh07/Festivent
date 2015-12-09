@@ -13,10 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -39,7 +36,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 
-public class list2 extends AppCompatActivity {
+public class List extends AppCompatActivity {
 
     private static final String TAG_EVENTS = "events";
     private static final String TAG_NAME = "name";
@@ -78,7 +75,7 @@ public class list2 extends AppCompatActivity {
         pBar = (ProgressBar) findViewById(R.id.pBar);
         pBar.setVisibility(View.VISIBLE);
         fabFilter = (FloatingActionButton) findViewById(R.id.filterFabList);
-        prefs = PreferenceManager.getDefaultSharedPreferences(list2.this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(List.this);
 
 
         //recyclerview for listview
@@ -89,7 +86,7 @@ public class list2 extends AppCompatActivity {
 
         //get Shared Preferences
         try {
-            GPS gps = new GPS(list2.this);
+            GPS gps = new GPS(List.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
             gps.convertGEO(latitude,longitude);
@@ -129,8 +126,8 @@ public class list2 extends AppCompatActivity {
         if(zipcode != null) {
             new MyTask().execute();
         } else {
-            Toast.makeText(list2.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(list2.this, Main.class);
+            Toast.makeText(List.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(List.this, Main.class);
             startActivity(i);
             finish();
         }
@@ -165,7 +162,7 @@ public class list2 extends AppCompatActivity {
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
         final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
-        AlertDialog.Builder dialog = new AlertDialog.Builder(list2.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(List.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
@@ -182,7 +179,7 @@ public class list2 extends AppCompatActivity {
                 .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(list2.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(List.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -268,7 +265,7 @@ public class list2 extends AppCompatActivity {
                 final String s = e.toString();
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        Toast.makeText(list2.this, s , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(List.this, s , Toast.LENGTH_SHORT).show();
                     }
                 });
                 e.printStackTrace();
@@ -279,7 +276,7 @@ public class list2 extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             pBar.setVisibility(View.GONE);
-            mAdapter = new MyAdapter(list2.this, myEvents, sEvents, true);
+            mAdapter = new ListAdapter(List.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }

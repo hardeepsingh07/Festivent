@@ -7,15 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -48,7 +45,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -67,9 +63,9 @@ public class Main extends AppCompatActivity
     public SharedPreferences prefs;
     public CharSequence primaryText = "";
     public CharSequence secondaryText = "";
-    private ArrayList<MainLocatioonInfo> recentItems = new ArrayList<>();
+    private ArrayList<MainLocationInfo> recentItems = new ArrayList<>();
     public ListView mListView;
-    public ArrayAdapter<MainLocatioonInfo> adapterForList;
+    public ArrayAdapter<MainLocationInfo> adapterForList;
     public Gson gson = new Gson();
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
@@ -108,7 +104,7 @@ public class Main extends AppCompatActivity
             @SuppressLint("CommitPrefEdits")
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainLocatioonInfo item = recentItems.get(position - 1);
+                MainLocationInfo item = recentItems.get(position - 1);
                 //put data in prefs
                 prefs.edit().putString("latitude", item.getLatitude() + "").commit();
                 prefs.edit().putString("longitude", item.getLongitude() + "").commit();
@@ -220,13 +216,13 @@ public class Main extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Type type = new TypeToken<ArrayList<MainLocatioonInfo>>(){}.getType();
+        Type type = new TypeToken<ArrayList<MainLocationInfo>>(){}.getType();
         String jsonRecentItems = prefs.getString("recentItems", "");
         if(!jsonRecentItems.equals("")) {
             recentItems.clear();
             recentItems = gson.fromJson(jsonRecentItems, type);
         }
-        adapterForList = new mListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
+        adapterForList = new RecentListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
         mListView.setAdapter(adapterForList);
     }
 
@@ -261,16 +257,16 @@ public class Main extends AppCompatActivity
         if(!check) {
             if (size >= 5) {
                 recentItems.remove(size - 1);
-                recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
+                recentItems.add(0, new MainLocationInfo(item, latitude, longitude));
             } else {
-                recentItems.add(0, new MainLocatioonInfo(item, latitude, longitude));
+                recentItems.add(0, new MainLocationInfo(item, latitude, longitude));
             }
             adapterForList.notifyDataSetChanged();
         }
     }
 
     public boolean contains(String name) {
-        for (MainLocatioonInfo item : recentItems) {
+        for (MainLocationInfo item : recentItems) {
             if (item.getName().equals(name)) {
                 return true;
             }
@@ -285,10 +281,10 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_map) {
-            Intent i = new Intent(Main.this, map.class);
+            Intent i = new Intent(Main.this, Mapss.class);
             startActivity(i);
         } else if (id == R.id.nav_list) {
-            Intent i = new Intent(Main.this, list2.class);
+            Intent i = new Intent(Main.this, List.class);
             startActivity(i);
         } else if (id == R.id.nav_settings) {
             Intent i = new Intent(Main.this, Settings.class);
@@ -332,11 +328,11 @@ public class Main extends AppCompatActivity
         //Ask for type of view
         switch(prefs.getString("dialogChoice", "")) {
             case "map":
-                i = new Intent(Main.this, map.class);
+                i = new Intent(Main.this, Mapss.class);
                 startActivity(i);
                 break;
             case "list":
-                i = new Intent(Main.this, list2.class);
+                i = new Intent(Main.this, List.class);
                 startActivity(i);
                 break;
             case "":
@@ -359,7 +355,7 @@ public class Main extends AppCompatActivity
                                 if (trigger) {
                                     prefs.edit().putString("dialogChoice", "map").commit();
                                 }
-                                Intent i = new Intent(Main.this, map.class);
+                                Intent i = new Intent(Main.this, Mapss.class);
                                 startActivity(i);
                             }
                         })
@@ -370,7 +366,7 @@ public class Main extends AppCompatActivity
                                 if (trigger) {
                                     prefs.edit().putString("dialogChoice", "list").commit();
                                 }
-                                Intent i = new Intent(Main.this, list2.class);
+                                Intent i = new Intent(Main.this, List.class);
                                 startActivity(i);
                             }
                         });
@@ -382,7 +378,7 @@ public class Main extends AppCompatActivity
     public boolean checkVoiceRecognition() {
         // Check if voice recognition is present
         PackageManager pm = getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+        java.util.List activities = pm.queryIntentActivities(new Intent(
                 RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         if (activities.size() == 0) {
             Toast.makeText(Main.this, "Voice recognizer not avaliable/present",

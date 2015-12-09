@@ -86,7 +86,7 @@ public class Welcome extends AppCompatActivity {
           */
 
 
-/*ParseCloud.callFunctionInBackground("getEventbriteEvents", map, new FunctionCallback<Object>() {
+/*ParseCloud.callFunctionInBackground("getEventbriteEvents", Mapss, new FunctionCallback<Object>() {
             @Override
             public void done(Object object, ParseException e) {
                 if(e == null) {

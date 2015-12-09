@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -60,7 +59,7 @@ public class SavedEvents extends AppCompatActivity {
         if(!savedEvents.equals("")) {
             sSEvents.clear();
             sSEvents = gson.fromJson(savedEvents, type);
-            mAdapter = new MyAdapter(SavedEvents.this, sSEvents, null, false);
+            mAdapter = new ListAdapter(SavedEvents.this, sSEvents, null, false);
             mRecyclerView.setAdapter(mAdapter);
             progressBar.setVisibility(View.GONE);
             if(sSEvents.isEmpty()) {
