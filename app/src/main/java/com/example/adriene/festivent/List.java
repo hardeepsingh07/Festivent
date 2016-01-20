@@ -65,6 +65,7 @@ public class List extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    public String miles, increment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +98,8 @@ public class List extends AppCompatActivity {
         }
 
         //get desired date and settings
-        String miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
+        miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
         String temp = prefs.getString("time", "1 Day");
-        String increment;
         if(temp.endsWith("Day") || temp.endsWith("Days")) {
             increment = temp.substring(0,1);
         } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
@@ -217,8 +217,9 @@ public class List extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
-
+                String apiData = Eventbrite.getData(zipcode, miles, getDate(), getDateIncrement(Integer.parseInt(increment)), "1");
+                //data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
+                data = new JSONObject(apiData);
                 if(data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
