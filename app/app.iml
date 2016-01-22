@@ -109,55 +109,44 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="mediarouter-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-location-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appindexing-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-identity-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="commons-logging-1.2" level="project" />
-    <orderEntry type="library" exported="" name="recyclerview-v7-23.1.1" level="project" />
-    <orderEntry type="library" exported="" name="play-services-analytics-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="httpclient-4.5.1" level="project" />
-    <orderEntry type="library" exported="" name="bolts-android-1.4.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="commons-codec-1.9" level="project" />
-    <orderEntry type="library" exported="" name="play-services-cast-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-appstate-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-games-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-safetynet-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="universal-image-loader-1.9.4" level="project" />
-    <orderEntry type="library" exported="" name="play-services-basement-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-nearby-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="bolts-applinks-1.4.0" level="project" />
-    <orderEntry type="library" exported="" name="jna-platform-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-fitness-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-location-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="jsoup-1.8.3" level="project" />
     <orderEntry type="library" exported="" name="play-services-wearable-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-measurement-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-identity-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="bolts-tasks-1.4.0" level="project" />
-    <orderEntry type="library" exported="" name="httpclient-cache-4.5.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-vision-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="recyclerview-v7-23.1.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-wallet-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-analytics-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-drive-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="httpclient-android-4.3.5.1" level="project" />
-    <orderEntry type="library" exported="" name="jna-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="parse-android-1.12.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-cast-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appinvite-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="httpmime-4.5.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appstate-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.5" level="project" />
-    <orderEntry type="library" exported="" name="httpclient-win-4.5.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-23.1.1" level="project" />
-    <orderEntry type="library" exported="" name="httpcore-4.4.3" level="project" />
-    <orderEntry type="library" exported="" name="json-20140107" level="project" />
+    <orderEntry type="library" exported="" name="play-services-games-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="design-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-gcm-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-safetynet-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="universal-image-loader-1.9.4" level="project" />
+    <orderEntry type="library" exported="" name="play-services-basement-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="fluent-hc-4.5.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-nearby-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="bolts-applinks-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-fitness-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
   </component>

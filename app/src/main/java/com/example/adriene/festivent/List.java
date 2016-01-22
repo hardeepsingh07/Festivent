@@ -217,9 +217,9 @@ public class List extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                String apiData = Eventbrite.getData(zipcode, miles, getDate(), getDateIncrement(Integer.parseInt(increment)), "1");
-                //data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
-                data = new JSONObject(apiData);
+                //String apiData = Eventbrite.getData(zipcode, miles, getDate(), getDateIncrement(Integer.parseInt(increment)), "1");
+                data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
+                //data = new JSONObject(apiData);
                 if(data != null) {
                     //Get JSON Array node
                     events = data.getJSONArray(TAG_EVENTS);
