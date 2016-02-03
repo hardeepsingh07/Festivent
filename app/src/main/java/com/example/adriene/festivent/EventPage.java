@@ -67,7 +67,7 @@ public class EventPage extends AppCompatActivity {
         loadImage();
 
         titleText.setText(title);
-        startTime.setText(format(sTime));
+        startTime.setText(sTime);
         website.setText(url);
         description.setText(describe);
 

@@ -348,7 +348,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                             imageUrl = null;
                         }
                         findRandomPoints(latitude, longitude, radius);
-                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, newLatitude, newLongitude));
+                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, newLatitude, newLongitude, "Eventbrite"));
                     }
                 }
             } catch (final Exception e) {
@@ -356,6 +356,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(Mapss.this, s , Toast.LENGTH_SHORT).show();
+
                     }
                 });
                 e.printStackTrace();

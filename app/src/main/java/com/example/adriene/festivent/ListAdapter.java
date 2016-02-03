@@ -96,7 +96,7 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
         holder.title.setText(myEvents.get(position).getEventName());
         holder.description.setText(myEvents.get(position).getDescription());
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+       /* SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date newDate = null;
         try {
             newDate = format.parse(myEvents.get(position).getStartDate());
@@ -104,8 +104,8 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
             e.printStackTrace();
         }
         format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
-        String formatted = format.format(newDate);
-        holder.date.setText(formatted);
+        String formatted = format.format(newDate);*/
+        holder.date.setText(myEvents.get(position).getStartDate());
 
         String url = myEvents.get(position).getImageUrl();
 

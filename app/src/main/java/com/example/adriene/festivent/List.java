@@ -1,6 +1,7 @@
 package com.example.adriene.festivent;
 
 import android.app.AlertDialog;
+import android.app.usage.UsageEvents;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import android.widget.ProgressBar;
@@ -39,14 +41,23 @@ import java.util.Locale;
 public class List extends AppCompatActivity {
 
     private static final String TAG_EVENTS = "events";
+    private static final String TAG_EVENT = "event";
+    private static final String TAG_TITLE = "title";
     private static final String TAG_NAME = "name";
     private static final String TAG_TEXT = "text";
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_URL = "url";
     private static final String TAG_START = "start";
+    private static final String TAG_START_TIME = "start_time";
+    private static final String TAG_END_TIME = "stop_time";
     private static final String TAG_LOCAL = "local";
     private static final String TAG_END = "end";
     private static final String TAG_LOGO = "logo";
+    private static final String TAG_LATITUDE = "latitude";
+    private static final String TAG_LONGITUDE= "longitude";
+    private static final String TAG_IMAGE = "image";
+    private static final String TAG_IMAGE_MEDIUM = "medium";
+
 
 
     public double latitude;
@@ -56,8 +67,11 @@ public class List extends AppCompatActivity {
     public String zipcode;
     public HashMap<String, String> param = new HashMap<String, String>();
     public JSONObject data;
-    public JSONArray events = null;
+    public JSONArray eventbriteJSONArray = null;
+    public JSONArray eventfulJSONArray = null;
     public ProgressBar pBar;
+    public ArrayList<EventInfo> eventbriteEvents = new ArrayList<EventInfo>();
+    public ArrayList<EventInfo> eventfulEvents = new ArrayList<EventInfo>();
     public ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
     public ArrayList<EventInfo> sEvents = new ArrayList<EventInfo>();
     public Gson gson = new Gson();
@@ -115,13 +129,6 @@ public class List extends AppCompatActivity {
         }
 
 
-        //Prepare the Hash
-        param.put("location", zipcode);
-        param.put("startDate", getDate());
-        param.put("endDate", getDateIncrement(Integer.parseInt(increment)));
-        param.put("within", miles);
-        param.put("page", "1");
-
         //execute the parse call
         if(zipcode != null) {
             new MyTask().execute();
@@ -161,7 +168,7 @@ public class List extends AppCompatActivity {
 
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
-        final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
+        final String [] options = {"Evenbrite", "Eventful"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(List.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
@@ -191,17 +198,39 @@ public class List extends AppCompatActivity {
         dialog.create().show();
     }
 
-    public String getDate() {
+    public String getEventBriteDate() {
         String result = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
         result += sdf.format(new Date());
         return result;
     }
 
-    public String getDateIncrement(int increment) {
+    public String getEventBriteDateIncrement(int increment) {
         String result = "";
-        String current = getDate();
+        String current = getEventBriteDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(sdf.parse(current));
+            c.add(Calendar.DATE, increment);
+            result += sdf.format(c.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public String getEventfulDate() {
+        String result = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        result += sdf.format(new Date());
+        return result;
+    }
+
+    public String getEventfulDateIncrement(int increment) {
+        String result = "";
+        String current = getEventfulDate();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
         Calendar c = Calendar.getInstance();
         try {
             c.setTime(sdf.parse(current));
@@ -216,17 +245,18 @@ public class List extends AppCompatActivity {
     private class MyTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+
+            //EventBrite's Events
             try {
-                //String apiData = Eventbrite.getData(zipcode, miles, getDate(), getDateIncrement(Integer.parseInt(increment)), "1");
-                data = new JSONObject((String) ParseCloud.callFunction("getEventbriteEvents", param));
-                //data = new JSONObject(apiData);
+                String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, getEventBriteDate(), getEventBriteDateIncrement(Integer.parseInt(increment)), "1");
+                data = new JSONObject(apiData);
                 if(data != null) {
                     //Get JSON Array node
-                    events = data.getJSONArray(TAG_EVENTS);
+                    eventbriteJSONArray = data.getJSONArray(TAG_EVENTS);
 
                     //loop through each event
-                    for (int i = 0; i < events.length(); i++) {
-                        JSONObject e = events.getJSONObject(i);
+                    for (int i = 0; i < eventbriteJSONArray.length(); i++) {
+                        JSONObject e = eventbriteJSONArray.getJSONObject(i);
 
                         //get name object from  list
                         JSONObject name = e.getJSONObject(TAG_NAME);
@@ -259,7 +289,7 @@ public class List extends AppCompatActivity {
                         } else {
                             imageUrl = null;
                         }
-                        myEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0));
+                        eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0, "EventBrite"));
                     }
                 }
             } catch (final Exception e) {
@@ -271,13 +301,75 @@ public class List extends AppCompatActivity {
                 });
                 e.printStackTrace();
             }
+
+            //Eventful Events
+            try {
+                String apiData = Eventful.getData(latitude + "", longitude + "", miles, getEventfulDate(), getEventfulDateIncrement(Integer.parseInt(increment)), "50");
+                data = new JSONObject(apiData);
+                if(data != null) {
+                    //Get JSON Array node
+                    JSONObject x = data.getJSONObject(TAG_EVENTS);
+                    eventfulJSONArray = x.getJSONArray(TAG_EVENT);
+
+                    //loop through each event
+                    for (int i = 0; i < eventfulJSONArray.length(); i++) {
+                        JSONObject e = eventfulJSONArray.getJSONObject(i);
+
+                        //get name object from  list
+                        String eventName = e.getString(TAG_TITLE);
+                        String desc = e.getString(TAG_DESCRIPTION);
+                        String url = e.getString(TAG_URL);
+                        if(desc == null) {
+                            desc = "No Description";
+                        }
+                        if(url == null) {
+                            url = "Website not provided";
+                        }
+
+                        //get startTime
+                        String startTime = e.getString(TAG_START_TIME);
+
+                        //get endTime Object
+                        String endTime = e.getString(TAG_END_TIME);
+
+                        //get logo object
+                        String imageUrl;
+                        if (!e.isNull(TAG_IMAGE)) {
+                            JSONObject image = e.getJSONObject(TAG_IMAGE);
+                            JSONObject imageMedium = image.getJSONObject(TAG_IMAGE_MEDIUM);
+                            imageUrl = imageMedium.getString(TAG_URL);
+                        } else {
+                            imageUrl = null;
+                        }
+
+                        //get GEO coordinates
+                        String lat = e.getString(TAG_LATITUDE);
+                        String log = e.getString(TAG_LONGITUDE);
+
+                        eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(lat), Double.parseDouble(log), "Eventful"));
+                    }
+                }
+            } catch (final Exception e) {
+                final String s = e.toString();
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(List.this, s , Toast.LENGTH_LONG).show();
+                        Log.d("eventful", s);
+                    }
+                });
+                e.printStackTrace();
+            }
+
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+           /* myEvents.addAll(eventbriteEvents);
+            myEvents.addAll(eventfulEvents);*/
             pBar.setVisibility(View.GONE);
-            mAdapter = new ListAdapter(List.this, myEvents, sEvents, true);
+            mAdapter = new ListAdapter(List.this, eventfulEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }

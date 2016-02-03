@@ -8,11 +8,11 @@ import java.io.Serializable;
  * Created by adriene on 10/24/15.
  */
 public class EventInfo implements Serializable{
-    String eventName, description, startDate, endTime, url, imageUrl;
+    String eventName, description, startDate, endTime, url, imageUrl, source;
     double latitude, longitude;
 
     public EventInfo(String eventName, String description, String startDate,
-                     String endTime, String url, String imageUrl, double latitude, double longitude){
+                     String endTime, String url, String imageUrl, double latitude, double longitude, String source){
         this.eventName = eventName;
         this.description = description;
         this.startDate = startDate;
@@ -21,6 +21,7 @@ public class EventInfo implements Serializable{
         this.imageUrl = imageUrl;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.source = source;
     }
 
 
@@ -51,5 +52,7 @@ public class EventInfo implements Serializable{
     }
 
     public String getUrl() { return url; }
+
+    public String getSource() {return  source;}
 
 }

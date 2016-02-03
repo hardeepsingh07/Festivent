@@ -9,9 +9,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Eventbrite {
+/**
+ * Created by Hardeep on 2/1/2016.
+ */
+public class Eventful {
     /**
-     * Retrieves a json string from EventBrite's server.
+     * Retrieves a json string from Eventful's server.
      *
      * @param distance  Distance from the search location in miles
      * @param startDate Start date of search. Format is in (YEAR-MONTH-DAY) Ex. (2015-10-7)
@@ -19,15 +22,15 @@ public class Eventbrite {
      *
      * @return
      */
-    public static String getData(String latitude, String longitude, String distance, String startDate, String endDate, String page) {
-        String link = "https://www.eventbriteapi.com/v3/events/search/?" +
-                "location.within=" + distance +
-                "&location.latitude=" + latitude +
-                "&location.longitude=" + longitude +
-                "&start_date.range_start=" + startDate +
-                "Z&page=" + page +
-                "&start_date.range_end=" + endDate +
-                "Z&token=PZDYIE3MVNSM5Z6EI3B6";
+
+
+    //http://api.eventful.com/rest/events/search?app_key=LCXcTmdZsCTQnhNZ&where=32.746682,-117.162741&within=25&date=2016020100-2016020200&page_size=50
+    public static String getData(String latitude, String longitude, String distance, String startDate, String endDate, String pageSize) {
+        String link = "http://api.eventful.com/json/events/search?app_key=LCXcTmdZsCTQnhNZ" +
+                "&where=" + latitude + "," + longitude +
+                "&within=" + distance +
+                "&page_size=" + pageSize +
+                "&date=" + startDate + "00," + endDate + "00";
         try {
             URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -42,6 +45,7 @@ public class Eventbrite {
             String result = "";
             while ((output = br.readLine()) != null) {
                 result = result + output;
+                Log.d("eventful", output);
             }
             conn.disconnect();
             return result;
@@ -50,5 +54,6 @@ public class Eventbrite {
         }
         return null;
     }
+
 
 }
