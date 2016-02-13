@@ -24,7 +24,7 @@ public class Eventful {
      */
 
 
-    //http://api.eventful.com/rest/events/search?app_key=LCXcTmdZsCTQnhNZ&where=32.746682,-117.162741&within=25&date=2016020100-2016020200&page_size=50
+    //http://api.eventful.com/rest/events/search?app_key=LCXcTmdZsCTQnhNZ&where=32.746682,-117.162741&within=10&date=2016020100-2016020200&page_size=50
     public static String getData(String latitude, String longitude, String distance, String startDate, String endDate, String pageSize) {
         String link = "http://api.eventful.com/json/events/search?app_key=LCXcTmdZsCTQnhNZ" +
                 "&where=" + latitude + "," + longitude +

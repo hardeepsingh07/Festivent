@@ -287,18 +287,21 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         mMap.clear();
         if(myEvents.size() > 0) {
             for(EventInfo event: myEvents) {
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(event.getLatitude(), event.getLongitude()));
-                Marker currentMarker = mMap.addMarker(markerOptions);
-                markerHash.put(currentMarker, event);
-                mMap.setInfoWindowAdapter(new MarkerAdapter(Mapss.this, markerHash));
+                if(event.getSource().equals("Eventful")) {
+                    Log.d("co-ordinate", event.getLatitude() + "," + event.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(event.getLatitude(), event.getLongitude()));
+                    Marker currentMarker = mMap.addMarker(markerOptions);
+                    markerHash.put(currentMarker, event);
+                    mMap.setInfoWindowAdapter(new MarkerAdapter(Mapss.this, markerHash));
+                }
             }
         }
     }
 
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
-        final String [] options = {"Evenbrite", "Facebook", "Yelp", "Ticket Master"};
+        final String [] options = {"Evenbrite", "Eventful"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(Mapss.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
@@ -437,6 +440,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                         Log.d("co-ordinates", lat+","+log);
                         if(!checkDuplicate(eventfulEvents, eventName)) {
                             eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(lat), Double.parseDouble(log), "Eventful"));
+                            //eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0,0.0, "Eventful"));
                         }
                     }
                 }
@@ -457,6 +461,8 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            myEvents.addAll(eventbriteEvents);
+            myEvents.addAll(eventfulEvents);
             pBar.setVisibility(View.GONE);
             plotMarkers();
             super.onPostExecute(aVoid);

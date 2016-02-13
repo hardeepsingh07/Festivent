@@ -113,7 +113,7 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
             formatted = format.format(newDate);
         }
         holder.date.setText(formatted);
-
+        holder.source.setText(myEvents.get(position).getSource());
         String url = myEvents.get(position).getImageUrl();
 
         if (url != null) {

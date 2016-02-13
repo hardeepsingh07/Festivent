@@ -49,17 +49,8 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
 
         final ImageView markerIcon = (ImageView) v.findViewById(R.id.markerImage);
         final TextView markerTitle = (TextView) v.findViewById(R.id.markerTitle);
-        TextView markerDescription = (TextView) v.findViewById(R.id.marketDes);
-        TextView distance = (TextView) v.findViewById(R.id.markerDist);
-        final ProgressBar pBar = (ProgressBar) v.findViewById(R.id.pMarBar);
-        pBar.setVisibility(View.GONE);
-        markerIcon.setVisibility(View.GONE);
 
-        //markerIcon.setImageBitmap(m.getIcon());
         markerTitle.setText(e.getEventName() + "");
-        markerDescription.setText(e.getDescription() + "");
-        distance.setText("0.0");
-
         String url = e.getImageUrl();
 
         if (url != null) {

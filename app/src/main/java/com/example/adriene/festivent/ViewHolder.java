@@ -13,6 +13,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     public TextView title;
     public TextView description;
     public TextView date;
+    public TextView source;
     public ImageView imageView;
     public CardView cv;
 
@@ -23,6 +24,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
         cv = (CardView) v.findViewById(R.id.card_view);
         title = (TextView) v.findViewById(R.id.label);
         date = (TextView) v.findViewById(R.id.dateTextView);
+        source = (TextView) v.findViewById(R.id.textViewSource);
         imageView = (ImageView) v.findViewById(R.id.icon);
 
         v.setOnClickListener(this);

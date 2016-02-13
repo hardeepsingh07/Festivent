@@ -30,7 +30,7 @@ public class EventPage extends AppCompatActivity {
     public double latitude;
     public double longitude;
     public TextView startTime, address, website, description, titleText;
-    public String title, describe, sTime, eTime, adresses, url, imageUrl,source;
+    public String title, describe, sTime, adresses, url, imageUrl,source;
     public EventInfo event;
     public ImageView picture;
 
@@ -50,6 +50,8 @@ public class EventPage extends AppCompatActivity {
         url = event.getUrl();
         imageUrl = event.getImageUrl();
         source = event.getSource();
+        latitude = event.getLatitude();
+        longitude = event.getLongitude();
 
         //get references
         titleText = (TextView) findViewById(R.id.titleText);
@@ -63,28 +65,30 @@ public class EventPage extends AppCompatActivity {
         loadImage();
 
         //set data
+        GPS gps = new GPS(EventPage.this);
         titleText.setText(title);
         startTime.setText(format(sTime));
         website.setText(url);
         description.setText(describe);
-
-
-        try {
-            latitude = Double.parseDouble(i.getStringExtra("latitude"));
-            longitude = Double.parseDouble(i.getStringExtra("longitude"));
-        } catch (Exception e) {
-            latitude = 0.0;
-            longitude = 0.0;
+        if(source.equals("EventBrite")) {
+            address.setText("Not Available");
+            address.setClickable(false);
+        } else {
+            address.setText(gps.convertGEO(latitude, longitude));
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?f=d&daddr=%f,%f?z=12", latitude, longitude);
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                i.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                startActivity(i);
+                if(source.equals("Eventful")) {
+                    String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?f=d&daddr=%f,%f?z=12", latitude, longitude);
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    i.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    startActivity(i);
+                } else {
+                    Toast.makeText(EventPage.this, "Sorry, no direction information available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
