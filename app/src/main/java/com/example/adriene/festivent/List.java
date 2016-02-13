@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.parse.ParseCloud;
 
 import org.json.JSONArray;
 
@@ -289,7 +288,10 @@ public class List extends AppCompatActivity {
                         } else {
                             imageUrl = null;
                         }
-                        eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0, "EventBrite"));
+
+                        if(!checkDuplicate(eventbriteEvents, eventName)) {
+                            eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0, "EventBrite"));
+                        }
                     }
                 }
             } catch (final Exception e) {
@@ -346,7 +348,9 @@ public class List extends AppCompatActivity {
                         String lat = e.getString(TAG_LATITUDE);
                         String log = e.getString(TAG_LONGITUDE);
 
-                        eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(lat), Double.parseDouble(log), "Eventful"));
+                        if(!checkDuplicate(eventfulEvents, eventName)) {
+                            eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(lat), Double.parseDouble(log), "Eventful"));
+                        }
                     }
                 }
             } catch (final Exception e) {
@@ -366,12 +370,21 @@ public class List extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-           /* myEvents.addAll(eventbriteEvents);
-            myEvents.addAll(eventfulEvents);*/
+            myEvents.addAll(eventbriteEvents);
+            myEvents.addAll(eventfulEvents);
             pBar.setVisibility(View.GONE);
-            mAdapter = new ListAdapter(List.this, eventfulEvents, sEvents, true);
+            mAdapter = new ListAdapter(List.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }
+    }
+
+    public boolean checkDuplicate(ArrayList<EventInfo> list,  String title) {
+        for(EventInfo eventInfo: list) {
+            if (eventInfo.getEventName().equals(title)) {
+                return true;
+            }
+        }
+        return  false;
     }
 }

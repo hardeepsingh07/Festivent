@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,7 +30,7 @@ public class EventPage extends AppCompatActivity {
     public double latitude;
     public double longitude;
     public TextView startTime, address, website, description, titleText;
-    public String title, describe, sTime, eTime, adresses, url, imageUrl;
+    public String title, describe, sTime, eTime, adresses, url, imageUrl,source;
     public EventInfo event;
     public ImageView picture;
 
@@ -38,8 +40,6 @@ public class EventPage extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_event_page);
 
-        //Intialize Image Loader
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(EventPage.this));
 
         //get intent data
         Intent i = getIntent();
@@ -49,13 +49,9 @@ public class EventPage extends AppCompatActivity {
         sTime = event.getStartDate();
         url = event.getUrl();
         imageUrl = event.getImageUrl();
+        source = event.getSource();
 
-       /* //intialize the top toolbar and set title
-        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        toolbar.setTitle(title);
-        toolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
-        toolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);*/
-
+        //get references
         titleText = (TextView) findViewById(R.id.titleText);
         picture = (ImageView) findViewById(R.id.bgheader);
         startTime = (TextView)  findViewById(R.id.textTime);
@@ -66,8 +62,9 @@ public class EventPage extends AppCompatActivity {
         //load the image from url
         loadImage();
 
+        //set data
         titleText.setText(title);
-        startTime.setText(sTime);
+        startTime.setText(format(sTime));
         website.setText(url);
         description.setText(describe);
 
@@ -127,25 +124,36 @@ public class EventPage extends AppCompatActivity {
     }
 
     public String format(String sTime) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        Date newDate = null;
-        try {
-            newDate = format.parse(event.getStartDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String formatted;
+        if(source.equals("EventBrite")) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date newDate = null;
+            try {
+                newDate = format.parse(event.getStartDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
+            formatted = format.format(newDate);
+            return formatted;
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date newDate = null;
+            try {
+                newDate = format.parse(event.getStartDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("MMM dd, yyyy HH:mm a");
+            formatted = format.format(newDate);
+            return formatted;
         }
-        format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
-        String formatted = format.format(newDate);
-        return formatted;
     }
 
     public void loadImage() {
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.loadImage(imageUrl, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                picture.setImageBitmap(loadedImage);
-            }
-        });
+        Picasso.with(EventPage.this)
+                .load(imageUrl)
+                .resize(200,200)
+                .into(picture);
     }
 }

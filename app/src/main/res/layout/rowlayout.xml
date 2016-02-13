@@ -17,13 +17,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/icon"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:src="@drawable/img"
+                android:padding="5dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
@@ -37,10 +38,14 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/icon"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:paddingBottom="5dp"
                 android:text="Title"
                 android:textSize="15dp"
                 android:singleLine="true"
-                android:textStyle="normal|bold"
+                android:textStyle="normal"
                 android:textColor="#000000"
                 android:typeface="serif"
                 android:ellipsize="end"
@@ -48,38 +53,19 @@
                 android:layout_alignEnd="@+id/icon" />
 
             <TextView
-                android:id="@+id/descriptionTextView"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/label"
-                android:layout_alignStart="@+id/label"
-                android:layout_below="@+id/label"
-                android:text="Description"
-                android:textSize="12dp"
-                android:layout_alignParentBottom="true"
-                android:typeface="serif"
-                android:textStyle="italic"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:layout_toStartOf="@+id/dateTextView"
-                android:gravity="center_vertical" />
-
-            <TextView
                 android:id="@+id/dateTextView"
-                android:layout_width="140dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/descriptionTextView"
                 android:layout_gravity="end"
                 android:text="Date"
                 android:typeface="serif"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:textStyle="normal"
-                android:textSize="12dp"
-                android:layout_alignBottom="@+id/descriptionTextView"
+                android:textSize="13dp"
                 android:textColor="#303F9F"
-                android:paddingLeft="10dp"
-                android:gravity="center_vertical" />
+                android:layout_below="@+id/label"
+                android:gravity="top|right" />
 
         </RelativeLayout>
 

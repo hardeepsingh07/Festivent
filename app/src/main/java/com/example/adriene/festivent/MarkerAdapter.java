@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,17 +33,6 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
     public MarkerAdapter(Context context, HashMap<Marker, EventInfo> markerHash) {
         this.context = context;
         this.markerHash = markerHash;
-
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.ic_pause_light)
-                .showImageForEmptyUri(R.drawable.ic_play_light)
-                .showImageOnFail(R.drawable.ic_setting_light)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .build();
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(context));
     }
 
     @Override
@@ -73,34 +63,10 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
         String url = e.getImageUrl();
 
         if (url != null) {
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(url, markerIcon, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String s, View view) {
-                    pBar.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingFailed(String s, View view, FailReason failReason) {
-                    pBar.setVisibility(View.GONE);
-                    markerIcon.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    markerIcon.setImageBitmap(bitmap);
-                    pBar.setVisibility(View.GONE);
-                    markerIcon.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingCancelled(String s, View view) {
-                    pBar.setVisibility(View.GONE);
-                }
-            });
+            Picasso.with(context)
+                    .load(url)
+                    .into(markerIcon);
         }
-
-
         return v;
     }
 }

@@ -13,11 +13,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.parse.FunctionCallback;
-import com.parse.Parse;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,8 +31,6 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-
-        Parse.initialize(this, "yfu0Rc9ON0WmTPczXt82CLnqsrtVIDVctnUGAgkI", "o7ohwJj1zOorCsdgkqVKcNr3GPuupYPRj730I59C");
 
         //Timer to move to Main Activity
         new Handler().postDelayed(new Runnable() {

@@ -22,7 +22,6 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
         super(v);
         cv = (CardView) v.findViewById(R.id.card_view);
         title = (TextView) v.findViewById(R.id.label);
-        description = (TextView) v.findViewById(R.id.descriptionTextView);
         date = (TextView) v.findViewById(R.id.dateTextView);
         imageView = (ImageView) v.findViewById(R.id.icon);
 

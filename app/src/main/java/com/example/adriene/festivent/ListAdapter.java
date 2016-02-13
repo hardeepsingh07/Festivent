@@ -21,7 +21,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,16 +49,6 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
         this.context = context;
         //true for List2.java call and false for SavedEvent.java call
         this.call = call;
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.logo)
-                .showImageForEmptyUri(R.drawable.logo)
-                .showImageOnFail(R.drawable.logo)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .build();
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(context));
     }
 
     @Override
@@ -73,7 +68,7 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
             @Override
             public void onClick(View v, int position, boolean isLongClick) {
                 final EventInfo event = (EventInfo) myEvents.get(position);
-                if(call) {
+                if (call) {
                     if (isLongClick) {
                         saveEventDialog(event);
                     } else {
@@ -94,43 +89,40 @@ public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
         });
 
         holder.title.setText(myEvents.get(position).getEventName());
-        holder.description.setText(myEvents.get(position).getDescription());
 
-       /* SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        Date newDate = null;
-        try {
-            newDate = format.parse(myEvents.get(position).getStartDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String formatted;
+        if(myEvents.get(position).getSource().equals("EventBrite")) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date newDate = null;
+            try {
+                newDate = format.parse(myEvents.get(position).getStartDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
+            formatted = format.format(newDate);
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date newDate = null;
+            try {
+                newDate = format.parse(myEvents.get(position).getStartDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
+            formatted = format.format(newDate);
         }
-        format = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
-        String formatted = format.format(newDate);*/
-        holder.date.setText(myEvents.get(position).getStartDate());
+        holder.date.setText(formatted);
 
         String url = myEvents.get(position).getImageUrl();
 
         if (url != null) {
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.displayImage(url, holder.imageView, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String s, View view) {
-                }
-
-                @Override
-                public void onLoadingFailed(String s, View view, FailReason failReason) {
-                    holder.imageView.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    holder.imageView.setImageBitmap(bitmap);
-                    holder.imageView.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onLoadingCancelled(String s, View view) {
-                }
-            });
+            Picasso.with(context)
+                    .load(url)
+                    .placeholder(R.drawable.img)
+                    .error(R.drawable.img)
+                    .resize(300, 180)
+                    .into(holder.imageView);
         }
     }
 
