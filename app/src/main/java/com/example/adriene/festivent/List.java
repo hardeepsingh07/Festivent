@@ -306,7 +306,7 @@ public class List extends AppCompatActivity {
 
             //Eventful Events
             try {
-                String apiData = Eventful.getData(latitude + "", longitude + "", miles, getEventfulDate(), getEventfulDateIncrement(Integer.parseInt(increment)), "50");
+                String apiData = Eventful.getData(latitude + "", longitude + "", miles, getEventfulDate(), getEventfulDateIncrement(Integer.parseInt(increment)), "25");
                 data = new JSONObject(apiData);
                 if(data != null) {
                     //Get JSON Array node
