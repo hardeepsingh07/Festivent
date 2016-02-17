@@ -143,7 +143,7 @@ public class List extends AppCompatActivity {
 
     public void showFilterDialog() {
         final ArrayList<String> selectedList = new ArrayList<>();
-        final String [] options = {"Evenbrite", "Eventful"};
+        final String [] options = {"Eventbrite", "Eventful"};
         AlertDialog.Builder dialog = new AlertDialog.Builder(List.this);
         dialog.setTitle("Filter Results");
         dialog.setMultiChoiceItems(options, null,
@@ -161,7 +161,23 @@ public class List extends AppCompatActivity {
                 .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(List.this, selectedList.toString(), Toast.LENGTH_SHORT).show();
+                        if(selectedList.contains("Eventbrite") && selectedList.contains("Eventful")) {
+                            myEvents.clear();
+                            myEvents.addAll(eventbriteEvents);
+                            myEvents.addAll(eventfulEvents);
+                            Toast.makeText(List.this, "Showing all the results", Toast.LENGTH_SHORT).show();
+                        } else if (selectedList.contains("Eventful") && !selectedList.contains("Eventbrite")) {
+                            myEvents.clear();
+                            myEvents.addAll(eventfulEvents);
+                            Toast.makeText(List.this, "Showing only Eventful events", Toast.LENGTH_SHORT).show();
+                        } else if(selectedList.contains("Eventbrite") && !selectedList.contains("Eventful")) {
+                            myEvents.clear();
+                            myEvents.addAll(eventbriteEvents);
+                            Toast.makeText(List.this, "Showing only Eventbrite events", Toast.LENGTH_SHORT).show();
+                        }
+                        pBar.setVisibility(View.VISIBLE);
+                        mAdapter.notifyDataSetChanged();
+                        pBar.setVisibility(View.INVISIBLE);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -199,14 +215,5 @@ public class List extends AppCompatActivity {
             mRecyclerView.setAdapter(mAdapter);
             super.onPostExecute(aVoid);
         }
-    }
-
-    public boolean checkDuplicate(ArrayList<EventInfo> list,  String title) {
-        for(EventInfo eventInfo: list) {
-            if (eventInfo.getEventName().equals(title)) {
-                return true;
-            }
-        }
-        return  false;
     }
 }
