@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_list" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.example.adriene.festivent.List">
+    android:layout_height="match_parent" tools:context="com.festivent.hardeep.festivent.List">
 
     <ListView
         android:layout_width="match_parent"

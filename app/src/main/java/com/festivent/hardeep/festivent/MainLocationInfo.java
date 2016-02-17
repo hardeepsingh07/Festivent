@@ -1,4 +1,4 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 /**
  * Created by Hardeep Singh on 10/29/2015.

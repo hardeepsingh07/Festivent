@@ -1,7 +1,6 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -13,10 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.example.adriene.festivent.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -62,7 +58,7 @@ public class EventPage extends AppCompatActivity {
         description = (TextView) findViewById(R.id.textDescription);
 
         //load the image from url
-        loadImage();
+        Picasso.with(EventPage.this).load(imageUrl).resize(200,200).into(picture);
 
         //set data
         GPS gps = new GPS(EventPage.this);
@@ -152,12 +148,5 @@ public class EventPage extends AppCompatActivity {
             formatted = format.format(newDate);
             return formatted;
         }
-    }
-
-    public void loadImage() {
-        Picasso.with(EventPage.this)
-                .load(imageUrl)
-                .resize(200,200)
-                .into(picture);
     }
 }

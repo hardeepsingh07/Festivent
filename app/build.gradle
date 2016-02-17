@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.adriene.festivent"
+        applicationId "com.festivent.hardeep.festivent"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

@@ -1,31 +1,16 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.example.adriene.festivent.R;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -38,7 +23,6 @@ import java.util.Date;
  */
 public class ListAdapter extends RecyclerView.Adapter<ViewHolder> {
     public ArrayList<EventInfo> myEvents;
-    public DisplayImageOptions options;
     public ArrayList<EventInfo> savedEvents;
     public static Context context;
     public boolean call;

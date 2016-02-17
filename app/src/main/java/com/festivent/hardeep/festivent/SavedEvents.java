@@ -1,4 +1,4 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.adriene.festivent.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

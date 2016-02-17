@@ -1,4 +1,4 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adriene.festivent.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;

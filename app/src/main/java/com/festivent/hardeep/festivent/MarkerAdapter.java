@@ -1,24 +1,16 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.adriene.festivent.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -28,7 +20,6 @@ public class MarkerAdapter implements GoogleMap.InfoWindowAdapter {
 
     public Context context;
     public HashMap<Marker, EventInfo> markerHash;
-    public DisplayImageOptions options;
 
     public MarkerAdapter(Context context, HashMap<Marker, EventInfo> markerHash) {
         this.context = context;

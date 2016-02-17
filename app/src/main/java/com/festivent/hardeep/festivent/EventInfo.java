@@ -1,6 +1,4 @@
-package com.example.adriene.festivent;
-
-import android.graphics.Bitmap;
+package com.festivent.hardeep.festivent;
 
 import java.io.Serializable;
 

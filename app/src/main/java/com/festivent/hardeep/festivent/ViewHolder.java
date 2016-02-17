@@ -1,10 +1,12 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.adriene.festivent.R;
 
 /**
  * Created by Hardeep Singh on 12/4/2015.

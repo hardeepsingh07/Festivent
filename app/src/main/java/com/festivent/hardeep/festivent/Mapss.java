@@ -1,4 +1,4 @@
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 
 import android.app.AlertDialog;
@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.adriene.festivent.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,24 +42,6 @@ import java.util.Random;
 
 public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final String TAG_EVENTS = "events";
-    private static final String TAG_EVENT = "event";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_TEXT = "text";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_URL = "url";
-    private static final String TAG_START = "start";
-    private static final String TAG_START_TIME = "start_time";
-    private static final String TAG_END_TIME = "stop_time";
-    private static final String TAG_LOCAL = "local";
-    private static final String TAG_END = "end";
-    private static final String TAG_LOGO = "logo";
-    private static final String TAG_LATITUDE = "latitude";
-    private static final String TAG_LONGITUDE= "longitude";
-    private static final String TAG_IMAGE = "image";
-    private static final String TAG_IMAGE_MEDIUM = "medium";
-
     private GoogleMap mMap;
     private FloatingActionButton mFab, filterFab;
     private ProgressBar pBar;
@@ -69,16 +52,11 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
     public CameraUpdate location;
     public SharedPreferences prefs;
     public String zipcode;
-    public HashMap<String, String> param = new HashMap<String, String>();
-    public JSONObject data;
-    public JSONArray eventbriteJSONArray = null;
-    public JSONArray eventfulJSONArray = null;
     public boolean Run = true, dataIncoming = false;
     public HashMap<Marker, EventInfo> markerHash;
     public ArrayList<EventInfo> eventbriteEvents = new ArrayList<EventInfo>();
     public ArrayList<EventInfo> eventfulEvents = new ArrayList<EventInfo>();
     public ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
-    public int radius = 1000;
     public static double newLatitude, newLongitude;
     public String miles, increment;
 
@@ -166,50 +144,6 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
-    public String getEventBriteDate() {
-        String result = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-        result += sdf.format(new Date());
-        return result;
-    }
-
-    public String getEventBriteDateIncrement(int increment) {
-        String result = "";
-        String current = getEventBriteDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-        Calendar c = Calendar.getInstance();
-        try {
-            c.setTime(sdf.parse(current));
-            c.add(Calendar.DATE, increment);
-            result += sdf.format(c.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public String getEventfulDate() {
-        String result = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
-        result += sdf.format(new Date());
-        return result;
-    }
-
-    public String getEventfulDateIncrement(int increment) {
-        String result = "";
-        String current = getEventfulDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
-        Calendar c = Calendar.getInstance();
-        try {
-            c.setTime(sdf.parse(current));
-            c.add(Calendar.DATE, increment);
-            result += sdf.format(c.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         markerHash.clear();
@@ -258,29 +192,27 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             EventInfo event = markerHash.get(marker);
             Intent j = new Intent(Mapss.this, EventPage.class);
             j.putExtra("event", event);
-            j.putExtra("latitude", latitude + "");
-            j.putExtra("longitude", longitude + "");
             startActivity(j);
         }
     };
 
     //Create Random Geo Points
-    public static void findRandomPoints(double lat, double log, int radius) {
-            Random random = new Random();
-            // Convert radius from meters to degrees
-            double radiusInDegrees = radius / 111000f;
-            double u = random.nextDouble();
-            double v = random.nextDouble();
-            double w = radiusInDegrees * Math.sqrt(u);
-            double t = 2 * Math.PI * v;
-            double x = w * Math.cos(t);
-            double y = w * Math.sin(t);
-
-            // Adjust the x-coordinate for the shrinking of the east-west distances
-            double new_x = x / Math.cos(log);
-            newLatitude = new_x + lat;
-            newLongitude = y + log;
-    }
+//    public static void findRandomPoints(double lat, double log, int radius) {
+//            Random random = new Random();
+//            // Convert radius from meters to degrees
+//            double radiusInDegrees = radius / 111000f;
+//            double u = random.nextDouble();
+//            double v = random.nextDouble();
+//            double w = radiusInDegrees * Math.sqrt(u);
+//            double t = 2 * Math.PI * v;
+//            double x = w * Math.cos(t);
+//            double y = w * Math.sin(t);
+//
+//            // Adjust the x-coordinate for the shrinking of the east-west distances
+//            double new_x = x / Math.cos(log);
+//            newLatitude = new_x + lat;
+//            newLongitude = y + log;
+//    }
 
     //Plot the Markers using HashMap
     public void plotMarkers()  {
@@ -334,133 +266,21 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
     private class MyTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            //EventBrite's Events
-            try {
-                String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, getEventBriteDate(), getEventBriteDateIncrement(Integer.parseInt(increment)), "1");
-                data = new JSONObject(apiData);
-                if(data != null) {
-                    //Get JSON Array node
-                    eventbriteJSONArray = data.getJSONArray(TAG_EVENTS);
+            //Get Eventbrite Events
+            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", Integer.parseInt(increment));
+            eventbriteEvents.clear();
+            eventbriteEvents = Eventbrite.getDateArray(apiData);
 
-                    //loop through each event
-                    for (int i = 0; i < eventbriteJSONArray.length(); i++) {
-                        JSONObject e = eventbriteJSONArray.getJSONObject(i);
-
-                        //get name object from  list
-                        JSONObject name = e.getJSONObject(TAG_NAME);
-                        String eventName = name.getString(TAG_TEXT);
-
-                        JSONObject description = e.getJSONObject(TAG_DESCRIPTION);
-                        String desc = description.getString(TAG_TEXT);
-                        String url = e.getString(TAG_URL);
-                        if(desc == null) {
-                            desc = "No Description";
-                        }
-
-                        if(url == null) {
-                            url = "Website not provided";
-                        }
-
-                        //get startTime object
-                        JSONObject start = e.getJSONObject(TAG_START);
-                        String startTime = start.getString(TAG_LOCAL);
-
-                        //get endTime Object
-                        JSONObject end = e.getJSONObject(TAG_END);
-                        String endTime = end.getString(TAG_LOCAL);
-
-                        //get logo object
-                        String imageUrl;
-                        if (!e.isNull("logo")) {
-                            JSONObject logo = e.getJSONObject(TAG_LOGO);
-                            imageUrl = logo.getString(TAG_URL);
-                        } else {
-                            imageUrl = null;
-                        }
-
-                        if(!checkDuplicate(eventbriteEvents, eventName)) {
-                            eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0, "EventBrite"));
-                        }
-                    }
-                }
-            } catch (final Exception e) {
-                final String s = e.toString();
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(Mapss.this, s , Toast.LENGTH_SHORT).show();
-                    }
-                });
-                e.printStackTrace();
-            }
-
-            //Eventful Events
-            try {
-                String apiData = Eventful.getData(latitude + "", longitude + "", miles, getEventfulDate(), getEventfulDateIncrement(Integer.parseInt(increment)), "50");
-                data = new JSONObject(apiData);
-                if(data != null) {
-                    //Get JSON Array node
-                    JSONObject x = data.getJSONObject(TAG_EVENTS);
-                    eventfulJSONArray = x.getJSONArray(TAG_EVENT);
-
-                    //loop through each event
-                    for (int i = 0; i < eventfulJSONArray.length(); i++) {
-                        JSONObject e = eventfulJSONArray.getJSONObject(i);
-
-                        //get name object from  list
-                        String eventName = e.getString(TAG_TITLE);
-                        String desc = e.getString(TAG_DESCRIPTION);
-                        String url = e.getString(TAG_URL);
-                        if(desc == null) {
-                            desc = "No Description";
-                        }
-                        if(url == null) {
-                            url = "Website not provided";
-                        }
-
-                        //get startTime
-                        String startTime = e.getString(TAG_START_TIME);
-
-                        //get endTime Object
-                        String endTime = e.getString(TAG_END_TIME);
-
-                        //get logo object
-                        String imageUrl;
-                        if (!e.isNull(TAG_IMAGE)) {
-                            JSONObject image = e.getJSONObject(TAG_IMAGE);
-                            JSONObject imageMedium = image.getJSONObject(TAG_IMAGE_MEDIUM);
-                            imageUrl = imageMedium.getString(TAG_URL);
-                        } else {
-                            imageUrl = null;
-                        }
-
-                        //get GEO coordinates
-                        String lat = e.getString(TAG_LATITUDE);
-                        String log = e.getString(TAG_LONGITUDE);
-
-                        Log.d("co-ordinates", lat+","+log);
-                        if(!checkDuplicate(eventfulEvents, eventName)) {
-                            eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(lat), Double.parseDouble(log), "Eventful"));
-                            //eventfulEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0,0.0, "Eventful"));
-                        }
-                    }
-                }
-            } catch (final Exception e) {
-                final String s = e.toString();
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(Mapss.this, s , Toast.LENGTH_LONG).show();
-                        Log.d("eventful", s);
-                    }
-                });
-                e.printStackTrace();
-            }
-
-
+            //Get Eventful events
+            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", Integer.parseInt(increment));
+            eventfulEvents.clear();
+            eventfulEvents = Eventful.getDataArray(apiData1);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            myEvents.clear();
             myEvents.addAll(eventbriteEvents);
             myEvents.addAll(eventfulEvents);
             pBar.setVisibility(View.GONE);

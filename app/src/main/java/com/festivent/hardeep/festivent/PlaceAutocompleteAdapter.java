@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.example.adriene.festivent;
+package com.festivent.hardeep.festivent;
 
 import android.content.Context;
 import android.graphics.Typeface;
