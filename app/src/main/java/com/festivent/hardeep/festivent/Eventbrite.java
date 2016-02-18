@@ -29,12 +29,18 @@ public class Eventbrite {
     private static final String TAG_LOCAL = "local";
     private static final String TAG_END = "end";
     private static final String TAG_LOGO = "logo";
+    private static final String TAG_VENUE_ID = "venue_id";
+    private static final String TAG_LATITUDE = "latitude";
+    private static final String TAG_LONGITUDE = "longitude";
 
 
     public static JSONObject data;
+    public static JSONObject venueData;
     public static ArrayList<EventInfo> eventbriteEvents = new ArrayList<EventInfo>();
     public static JSONArray eventbriteJSONArray = null;
 
+
+    //Venue ID LINK: https://www.eventbriteapi.com/v3/venues/4615505/?token=PZDYIE3MVNSM5Z6EI3B6
     public static String getData(String latitude, String longitude, String distance, String page, int increment) {
         String link = "https://www.eventbriteapi.com/v3/events/search/?" +
                 "location.within=" + distance +
@@ -65,6 +71,47 @@ public class Eventbrite {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getVenueData(String id) {
+        String link = "https://www.eventbriteapi.com/v3/venues/" +
+                id +
+                "/?token=PZDYIE3MVNSM5Z6EI3B6";
+        try {
+            URL url = new URL(link);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoInput(true);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("accept", "application/json");
+            conn.connect();
+
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String output;
+            String result = "";
+            while ((output = br.readLine()) != null) {
+                result = result + output;
+            }
+            conn.disconnect();
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getVenueString(String apiData) {
+        String latLog = "";
+        try{
+            venueData = new JSONObject(apiData);
+            latLog +=  venueData.getString(TAG_LATITUDE);
+            latLog += ",";
+            latLog += venueData.getString(TAG_LONGITUDE);
+            Log.d("latLog", latLog);
+        } catch (Exception e) {
+            Log.e("eventbrite_error", e.toString());
+        }
+        return latLog;
     }
 
     public static ArrayList<EventInfo> getDateArray(String apiData) {
@@ -102,6 +149,13 @@ public class Eventbrite {
                     JSONObject end = e.getJSONObject(TAG_END);
                     String endTime = end.getString(TAG_LOCAL);
 
+                    String venueID = e.getString(TAG_VENUE_ID);
+                    Log.d("venue_ID", venueID);
+                    String venue_data = getVenueData(venueID);
+                    String incoming = getVenueString(venue_data);
+
+                    String [] result = incoming.split(",");
+
                     //get logo object
                     String imageUrl;
                     if (!e.isNull("logo")) {
@@ -112,7 +166,7 @@ public class Eventbrite {
                     }
 
                     if(!checkDuplicate(eventbriteEvents, eventName)) {
-                        eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, 0.0, 0.0, "EventBrite"));
+                        eventbriteEvents.add(new EventInfo(eventName, desc, startTime, endTime, url, imageUrl, Double.parseDouble(result[0]), Double.parseDouble(result[1]), "EventBrite"));
                     }
                 }
             }

@@ -219,14 +219,12 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         mMap.clear();
         if(myEvents.size() > 0) {
             for(EventInfo event: myEvents) {
-                if(event.getSource().equals("Eventful")) {
                     Log.d("co-ordinate", event.getLatitude() + "," + event.getLongitude());
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(event.getLatitude(), event.getLongitude()));
                     Marker currentMarker = mMap.addMarker(markerOptions);
                     markerHash.put(currentMarker, event);
                     mMap.setInfoWindowAdapter(new MarkerAdapter(Mapss.this, markerHash));
-                }
             }
         }
     }

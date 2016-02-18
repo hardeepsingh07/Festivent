@@ -66,25 +66,16 @@ public class EventPage extends AppCompatActivity {
         startTime.setText(format(sTime));
         website.setText(url);
         description.setText(describe);
-        if(source.equals("EventBrite")) {
-            address.setText("Not Available");
-            address.setClickable(false);
-        } else {
-            address.setText(gps.convertGEO(latitude, longitude));
-        }
+        address.setText(gps.convertGEO(latitude, longitude));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(source.equals("Eventful")) {
                     String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?f=d&daddr=%f,%f?z=12", latitude, longitude);
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                     i.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                     startActivity(i);
-                } else {
-                    Toast.makeText(EventPage.this, "Sorry, no direction information available", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
