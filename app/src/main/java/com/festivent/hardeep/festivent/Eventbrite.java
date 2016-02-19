@@ -1,5 +1,6 @@
 package com.festivent.hardeep.festivent;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -50,33 +51,17 @@ public class Eventbrite {
                 "Z&page=" + page +
                 "&start_date.range_end=" + getEventBriteDateIncrement(increment) +
                 "Z&token=PZDYIE3MVNSM5Z6EI3B6";
-        try {
-            URL url = new URL(link);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("accept", "application/json");
-            conn.connect();
-
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String output;
-            String result = "";
-            while ((output = br.readLine()) != null) {
-                result = result + output;
-            }
-            conn.disconnect();
-            return result;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return makeCall(link);
     }
 
     public static String getVenueData(String id) {
         String link = "https://www.eventbriteapi.com/v3/venues/" +
                 id +
                 "/?token=PZDYIE3MVNSM5Z6EI3B6";
+        return makeCall(link);
+    }
+
+    public static String makeCall(String link) {
         try {
             URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -107,14 +92,13 @@ public class Eventbrite {
             latLog +=  venueData.getString(TAG_LATITUDE);
             latLog += ",";
             latLog += venueData.getString(TAG_LONGITUDE);
-            Log.d("latLog", latLog);
         } catch (Exception e) {
             Log.e("eventbrite_error", e.toString());
         }
         return latLog;
     }
 
-    public static ArrayList<EventInfo> getDateArray(String apiData) {
+    public static ArrayList<EventInfo> getDateArray(Context context, String apiData) {
         eventbriteEvents.clear();
         try {
             data = new JSONObject(apiData);
@@ -150,10 +134,10 @@ public class Eventbrite {
                     String endTime = end.getString(TAG_LOCAL);
 
                     String venueID = e.getString(TAG_VENUE_ID);
-                    Log.d("venue_ID", venueID);
+
+                    //get latitude and longitude
                     String venue_data = getVenueData(venueID);
                     String incoming = getVenueString(venue_data);
-
                     String [] result = incoming.split(",");
 
                     //get logo object
@@ -172,6 +156,7 @@ public class Eventbrite {
             }
         } catch (Exception e) {
             Log.e("eventbrite_error", e.toString());
+            Toast.makeText(context, "Sorry an error have occured. Please try again.", Toast.LENGTH_SHORT).show();
         }
         return eventbriteEvents;
     }

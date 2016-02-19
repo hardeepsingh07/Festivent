@@ -253,7 +253,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                             myEvents.clear();
                             myEvents.addAll(eventbriteEvents);
                             myEvents.addAll(eventfulEvents);
-                            Toast.makeText(Mapss.this, "Showing all the results", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Mapss.this, "Showing results from all sources", Toast.LENGTH_SHORT).show();
                         } else if (selectedList.contains("Eventful") && !selectedList.contains("Eventbrite")) {
                             myEvents.clear();
                             myEvents.addAll(eventfulEvents);
@@ -264,7 +264,8 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                             Toast.makeText(Mapss.this, "Showing only Eventbrite events", Toast.LENGTH_SHORT).show();
                         }
                         pBar.setVisibility(View.VISIBLE);
-                        //mAdapter.notifyDataSetChanged();
+                        mMap.clear();
+                        plotMarkers();
                         pBar.setVisibility(View.INVISIBLE);
                     }
                 })
@@ -283,12 +284,12 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             //Get Eventbrite Events
             String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", Integer.parseInt(increment));
             eventbriteEvents.clear();
-            eventbriteEvents = Eventbrite.getDateArray(apiData);
+            eventbriteEvents = Eventbrite.getDateArray(Mapss.this, apiData);
 
             //Get Eventful events
             String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", Integer.parseInt(increment));
             eventfulEvents.clear();
-            eventfulEvents = Eventful.getDataArray(apiData1);
+            eventfulEvents = Eventful.getDataArray(Mapss.this, apiData1);
             return null;
         }
 

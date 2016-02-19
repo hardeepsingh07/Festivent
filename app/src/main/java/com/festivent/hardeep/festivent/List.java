@@ -196,12 +196,12 @@ public class List extends AppCompatActivity {
             //Get EventBrite Events
             String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", Integer.parseInt(increment));
             eventbriteEvents.clear();
-            eventbriteEvents = Eventbrite.getDateArray(apiData);
+            eventbriteEvents = Eventbrite.getDateArray(List.this, apiData);
 
             //Get Eventful Events
             String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", Integer.parseInt(increment));
             eventfulEvents.clear();
-            eventfulEvents = Eventful.getDataArray(apiData1);
+            eventfulEvents = Eventful.getDataArray(List.this, apiData1);
             return null;
         }
 

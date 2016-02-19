@@ -1,5 +1,6 @@
 package com.festivent.hardeep.festivent;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -70,7 +71,7 @@ public class Eventful {
         return null;
     }
 
-    public static ArrayList<EventInfo> getDataArray(String apiData) {
+    public static ArrayList<EventInfo> getDataArray(Context context, String apiData) {
         //Eventful Events
         try {
             data = new JSONObject(apiData);
@@ -121,6 +122,7 @@ public class Eventful {
             }
         } catch (final Exception e) {
             Log.e("eventful_error", e.toString());
+            Toast.makeText(context, "Sorry an error have occured. Please try again.", Toast.LENGTH_SHORT).show();
         }
         return eventfulEvents;
     }
