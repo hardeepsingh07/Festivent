@@ -2,17 +2,21 @@ package com.festivent.hardeep.festivent;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +29,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,16 +49,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, DatePickerDialog.OnDateSetListener {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 420;
     public static AutoCompleteTextView ac;
+    public static EditText from, to;
+    public static TextInputLayout from_layout, to_layout;
     public static ImageButton search;
     public static FloatingActionButton fab;
     protected GoogleApiClient mGoogleApiClient;
@@ -61,6 +74,7 @@ public class Main extends AppCompatActivity
     public String wordLocation;
     public GPS gps;
     public boolean trigger = false;
+    public boolean dateTrigger = false; //True is to_date
     public SharedPreferences prefs;
     public CharSequence primaryText = "";
     public CharSequence secondaryText = "";
@@ -92,6 +106,10 @@ public class Main extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //Intialize the varibale and views
+        from_layout = (TextInputLayout) findViewById(R.id.from_layout);
+        to_layout = (TextInputLayout) findViewById(R.id.to_layout);
+        from  = (EditText) findViewById(R.id.from_editText);
+        to = (EditText) findViewById(R.id.to_editText);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         ac = (AutoCompleteTextView) findViewById(R.id.ac);
         search = (ImageButton) findViewById(R.id.sIButton);
@@ -112,6 +130,23 @@ public class Main extends AppCompatActivity
 
                 //trigger the swtich dialog
                 switchDialog();
+            }
+        });
+
+        //handle click on editText
+        from.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateTrigger = false;
+                showDateDialog();
+            }
+        });
+
+        to.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateTrigger = true;
+                showDateDialog();
             }
         });
 
@@ -214,6 +249,7 @@ public class Main extends AppCompatActivity
         prefs.edit().putString("recentItems", jsonRecentItems).apply();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -225,6 +261,9 @@ public class Main extends AppCompatActivity
         }
         adapterForList = new RecentListAdapter(Main.this, android.R.layout.simple_list_item_1, recentItems);
         mListView.setAdapter(adapterForList);
+
+        DatePickerDialog dpd = (DatePickerDialog) getFragmentManager().findFragmentByTag("Datepickerdialog");
+        if(dpd != null) dpd.setOnDateSetListener(this);
     }
 
     @Override
@@ -256,7 +295,7 @@ public class Main extends AppCompatActivity
         int size = recentItems.size();
         boolean check = contains(item);
         if(!check) {
-            if (size >= 5) {
+            if (size >= 4) {
                 recentItems.remove(size - 1);
                 recentItems.add(0, new MainLocationInfo(item, latitude, longitude));
             } else {
@@ -387,6 +426,43 @@ public class Main extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    public void showDateDialog() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                Main.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        //dpd.showYearPickerFirst(showYearFirst.isChecked());
+        dpd.setAccentColor(Color.parseColor("#303F9F"));
+        dpd.setTitle("From Date");
+        //dpd.setSelectableDays(dates);
+        dpd.show(getFragmentManager(), "Datepickerdialog");
+        dpd.setMinDate(now);
+
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar c = Calendar.getInstance();
+        String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDate = null;
+        try {
+            newDate = format.parse(year + "-" + monthOfYear + "-" + dayOfMonth);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        format = new SimpleDateFormat("MMMM dd, yyyy");
+        String formatted = format.format(newDate);
+        if(!dateTrigger) {
+            from.setText(formatted);
+        } else {
+            to.setText(formatted);
+        }
     }
 
 }
