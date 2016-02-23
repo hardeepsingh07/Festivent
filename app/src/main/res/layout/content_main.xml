@@ -66,11 +66,12 @@
         android:id="@+id/to_layout"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/linearLayout"
         android:layout_toRightOf="@+id/from_layout"
-        android:layout_toEndOf="@+id/from_layout">
+        android:layout_toEndOf="@+id/from_layout"
+        android:measureWithLargestChild="false"
+        android:gravity="center">
 
         <EditText
             android:id="@+id/to_editText"
@@ -99,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_alignParentStart="true"
         android:gravity="center_vertical">
 
@@ -123,12 +124,12 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:id="@+id/mListView"
         android:choiceMode="singleChoice"
         android:layout_below="@+id/to_layout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="25dp" />
 
 </RelativeLayout>
