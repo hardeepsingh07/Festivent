@@ -420,9 +420,6 @@ public class Main extends AppCompatActivity
 
     public void mainToMap() {
         Intent i = new Intent(Main.this, Mapss.class);
-        //This is one month short because Calender start from 0 so add one more month where being used
-//        i.putExtra("fromDate", finalFrom);
-//        i.putExtra("toDate", finalTo);
         prefs.edit().putLong("fromDate", finalFrom.getTimeInMillis()).commit();
         prefs.edit().putLong("toDate", finalTo.getTimeInMillis()).commit();
         startActivity(i);
@@ -430,9 +427,6 @@ public class Main extends AppCompatActivity
 
     public void mainToList() {
         Intent i = new Intent(Main.this, List.class);
-        //This is one month short because Calender starts from 0 so add one more month where being used
-//        i.putExtra("fromDate", finalFrom);
-//        i.putExtra("toDate", finalTo);
         prefs.edit().putLong("fromDate", finalFrom.getTimeInMillis()).commit();
         prefs.edit().putLong("toDate", finalTo.getTimeInMillis()).commit();
         startActivity(i);

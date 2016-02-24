@@ -86,10 +86,6 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             longitude = 0.0;
         }
 
-//        //get intents
-//        from = (Calendar) getIntent().getSerializableExtra("fromDate");
-//        to = (Calendar) getIntent().getSerializableExtra("toDate");
-
         //get desired date and settings
         miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
         String temp = prefs.getString("time", "1 Day");
