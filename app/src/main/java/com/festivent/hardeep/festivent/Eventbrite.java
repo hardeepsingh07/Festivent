@@ -12,11 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class Eventbrite {
@@ -42,14 +40,14 @@ public class Eventbrite {
 
 
     //Venue ID LINK: https://www.eventbriteapi.com/v3/venues/4615505/?token=PZDYIE3MVNSM5Z6EI3B6
-    public static String getData(String latitude, String longitude, String distance, String page, int increment) {
+    public static String getData(String latitude, String longitude, String distance, String page, Calendar from, Calendar to) {
         String link = "https://www.eventbriteapi.com/v3/events/search/?" +
                 "location.within=" + distance +
                 "&location.latitude=" + latitude +
                 "&location.longitude=" + longitude +
-                "&start_date.range_start=" + getEventBriteDate() +
+                "&start_date.range_start=" + getEventBriteDate(from) +
                 "Z&page=" + page +
-                "&start_date.range_end=" + getEventBriteDateIncrement(increment) +
+                "&start_date.range_end=" + getEventBriteDate(to) +
                 "Z&token=PZDYIE3MVNSM5Z6EI3B6";
         return makeCall(link);
     }
@@ -170,25 +168,25 @@ public class Eventbrite {
         return  false;
     }
 
-    public static String getEventBriteDate() {
+    public static String getEventBriteDate(Calendar cal) {
         String result = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-        result += sdf.format(new Date());
+        result += sdf.format(cal.getTime());
         return result;
     }
 
-    public static String getEventBriteDateIncrement(int increment) {
-        String result = "";
-        String current = getEventBriteDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
-        Calendar c = Calendar.getInstance();
-        try {
-            c.setTime(sdf.parse(current));
-            c.add(Calendar.DATE, increment);
-            result += sdf.format(c.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+//    public static String getEventBriteDateIncrement(int increment) {
+//        String result = "";
+//        String current = getEventBriteDate();
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+//        Calendar c = Calendar.getInstance();
+//        try {
+//            c.setTime(sdf.parse(current));
+//            c.add(Calendar.DATE, increment);
+//            result += sdf.format(c.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return result;
+//    }
 }

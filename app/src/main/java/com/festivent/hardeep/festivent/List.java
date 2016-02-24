@@ -5,36 +5,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 
 import com.example.adriene.festivent.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-
-import org.json.JSONObject;
-
 import java.lang.reflect.Type;
-import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Locale;
 
 
 public class List extends AppCompatActivity {
@@ -55,6 +42,8 @@ public class List extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     public String miles, increment;
+    public Calendar from = Calendar.getInstance();
+    public Calendar to = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,16 +64,26 @@ public class List extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //get Shared Preferences
+        Calendar cal = Calendar.getInstance();
         try {
             GPS gps = new GPS(List.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
-            gps.convertGEO(latitude,longitude);
+            from.setTimeInMillis(prefs.getLong("fromDate", cal.getTimeInMillis()));
+            cal.add(Calendar.DATE, 1);
+            to.setTimeInMillis(prefs.getLong("toDate", cal.getTimeInMillis()));
+            gps.convertGEO(latitude, longitude);
             zipcode = gps.getZipcode();
         } catch (Exception e) {
+            Toast.makeText(List.this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
             latitude = 0.0;
             longitude = 0.0;
         }
+
+//        //get intents
+//        from = (Calendar) getIntent().getSerializableExtra("fromDate");
+//        to = (Calendar) getIntent().getSerializableExtra("toDate");
+
 
         //get desired date and settings
         miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
@@ -194,12 +193,12 @@ public class List extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             //Get EventBrite Events
-            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", Integer.parseInt(increment));
+            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to);
             eventbriteEvents.clear();
             eventbriteEvents = Eventbrite.getDateArray(List.this, apiData);
 
             //Get Eventful Events
-            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", Integer.parseInt(increment));
+            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to);
             eventfulEvents.clear();
             eventfulEvents = Eventful.getDataArray(List.this, apiData1);
             return null;

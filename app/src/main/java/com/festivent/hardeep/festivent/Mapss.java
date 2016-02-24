@@ -9,36 +9,28 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.adriene.festivent.R;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.Random;
 
 public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
@@ -59,6 +51,8 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
     public ArrayList<EventInfo> myEvents = new ArrayList<EventInfo>();
     public static double newLatitude, newLongitude;
     public String miles, increment;
+    public Calendar from = Calendar.getInstance();
+    public Calendar to = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +69,14 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
 
         //get Shared Preferences
+        Calendar cal = Calendar.getInstance();
         try {
             GPS gps = new GPS(Mapss.this);
             latitude = Double.parseDouble(prefs.getString("latitude", ""));
             longitude = Double.parseDouble(prefs.getString("longitude", ""));
+            from.setTimeInMillis(prefs.getLong("fromDate", cal.getTimeInMillis()));
+            cal.add(Calendar.DATE, 1);
+            to.setTimeInMillis(prefs.getLong("toDate", cal.getTimeInMillis()));
             gps.convertGEO(latitude,longitude);
             zipcode = gps.getZipcode();
             dataIncoming = true;
@@ -87,6 +85,10 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             latitude = 0.0;
             longitude = 0.0;
         }
+
+//        //get intents
+//        from = (Calendar) getIntent().getSerializableExtra("fromDate");
+//        to = (Calendar) getIntent().getSerializableExtra("toDate");
 
         //get desired date and settings
         miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
@@ -282,12 +284,12 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         @Override
         protected Void doInBackground(Void... params) {
             //Get Eventbrite Events
-            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", Integer.parseInt(increment));
+            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to);
             eventbriteEvents.clear();
             eventbriteEvents = Eventbrite.getDateArray(Mapss.this, apiData);
 
             //Get Eventful events
-            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", Integer.parseInt(increment));
+            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to);
             eventfulEvents.clear();
             eventfulEvents = Eventful.getDataArray(Mapss.this, apiData1);
             return null;

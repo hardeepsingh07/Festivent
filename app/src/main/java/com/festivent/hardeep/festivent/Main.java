@@ -53,8 +53,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -82,8 +80,7 @@ public class Main extends AppCompatActivity
     public Gson gson = new Gson();
     private static final LatLngBounds BOUNDS = new LatLngBounds(
             new LatLng(-34.041458, 150.790100), new LatLng(-33.682247, 151.383362));
-    public Calendar now = Calendar.getInstance();
-    public String resultDate;
+    public Calendar finalFrom, finalTo;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -375,16 +372,13 @@ public class Main extends AppCompatActivity
     }
 
     public void switchDialog() {
-        Intent i;
         //Ask for type of view
         switch(prefs.getString("dialogChoice", "")) {
             case "map":
-                i = new Intent(Main.this, Mapss.class);
-                startActivity(i);
+                mainToMap();
                 break;
             case "list":
-                i = new Intent(Main.this, List.class);
-                startActivity(i);
+                mainToList();
                 break;
             case "":
                 AlertDialog.Builder dialog = new AlertDialog.Builder(Main.this);
@@ -406,8 +400,7 @@ public class Main extends AppCompatActivity
                                 if (trigger) {
                                     prefs.edit().putString("dialogChoice", "map").commit();
                                 }
-                                Intent i = new Intent(Main.this, Mapss.class);
-                                startActivity(i);
+                                mainToMap();
                             }
                         })
                         .setNegativeButton("List", new DialogInterface.OnClickListener() {
@@ -417,13 +410,32 @@ public class Main extends AppCompatActivity
                                 if (trigger) {
                                     prefs.edit().putString("dialogChoice", "list").commit();
                                 }
-                                Intent i = new Intent(Main.this, List.class);
-                                startActivity(i);
+                                mainToList();
                             }
                         });
                 dialog.create().show();
                 break;
         }
+    }
+
+    public void mainToMap() {
+        Intent i = new Intent(Main.this, Mapss.class);
+        //This is one month short because Calender start from 0 so add one more month where being used
+//        i.putExtra("fromDate", finalFrom);
+//        i.putExtra("toDate", finalTo);
+        prefs.edit().putLong("fromDate", finalFrom.getTimeInMillis()).commit();
+        prefs.edit().putLong("toDate", finalTo.getTimeInMillis()).commit();
+        startActivity(i);
+    }
+
+    public void mainToList() {
+        Intent i = new Intent(Main.this, List.class);
+        //This is one month short because Calender starts from 0 so add one more month where being used
+//        i.putExtra("fromDate", finalFrom);
+//        i.putExtra("toDate", finalTo);
+        prefs.edit().putLong("fromDate", finalFrom.getTimeInMillis()).commit();
+        prefs.edit().putLong("toDate", finalTo.getTimeInMillis()).commit();
+        startActivity(i);
     }
 
     public boolean checkVoiceRecognition() {
@@ -440,6 +452,7 @@ public class Main extends AppCompatActivity
     }
 
     public void showDateDialog() throws ParseException {
+        Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 Main.this,
                 now.get(Calendar.YEAR),
@@ -452,54 +465,41 @@ public class Main extends AppCompatActivity
         if(!dateTrigger) {
             dpd.setMinDate(now);
         } else {
-            if(resultDate != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                Calendar cal = sdf.getCalendar();
-                cal.setTime(sdf.parse(resultDate));
-                cal.add(Calendar.DATE, 1);
-                dpd.setMinDate(cal);
-            } else {
-                now.add(Calendar.DATE, 1);
-                dpd.setMinDate(now);
-            }
+            Calendar temp = (Calendar) finalFrom.clone();
+            temp.add(Calendar.DATE, 1);
+            dpd.setMinDate(temp);
         }
 
     }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date newDate = null;
-        Date newDate2 = null;
-        try {
-            newDate = format.parse(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-            newDate2 = format.parse(year + "-" + (monthOfYear + 1) + "-" + (dayOfMonth + 1));
-            resultDate = format.format(newDate);
-
-        } catch (Exception e) {}
-        format = new SimpleDateFormat("MMMM dd, yyyy");
-        String formatted = format.format(newDate).split(",")[0];
-        String formatted2 = format.format(newDate2).split(",")[0];
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, monthOfYear, dayOfMonth);
+        SimpleDateFormat myFormat = new SimpleDateFormat("MMMM dd");
         if(!dateTrigger) {
-            from.setText(formatted);
-            to.setText(formatted2);
+            from.setText(myFormat.format(cal.getTime()));
+            finalFrom = (Calendar) cal.clone();
+            if(cal.compareTo(finalTo) == 1) {
+                cal.add(Calendar.DATE, 1);
+                to.setText(myFormat.format(cal.getTime()));
+                finalTo = (Calendar) cal.clone();
+            }
         } else {
-            to.setText(formatted);
+            to.setText(myFormat.format(cal.getTime()));
+            finalTo = (Calendar) cal.clone();
         }
     }
 
+
     public void setDefaultDate() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date newDate = null;
-        Date newDate2 = null;
-        try {
-            newDate = format.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1) + "-" + now.get(Calendar.DAY_OF_MONTH));
-            newDate2 = format.parse(now.get(Calendar.YEAR) + "-" + (now.get(Calendar.MONTH) + 1)+ "-" + (now.get(Calendar.DAY_OF_MONTH) + 1));
-        } catch (Exception e) {}
-        format = new SimpleDateFormat("MMMM dd, yyyy");
-        from.setText(format.format(newDate).split(",")[0]);
-        to.setText(format.format(newDate2).split(",")[0]);
+        Calendar now = Calendar.getInstance();
+        SimpleDateFormat defaultFormat = new SimpleDateFormat("MMMM dd");
+        from.setText(defaultFormat.format(now.getTime()));
+        finalFrom = (Calendar) now.clone();
+        now.add(Calendar.DATE, 1);
+        to.setText(defaultFormat.format(now.getTime()));
+        finalTo = (Calendar) now.clone();
     }
 
 }

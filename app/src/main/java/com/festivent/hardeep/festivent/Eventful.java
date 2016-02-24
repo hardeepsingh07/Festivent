@@ -12,11 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -41,12 +39,12 @@ public class Eventful {
 
 
     //http://api.eventful.com/rest/events/search?app_key=LCXcTmdZsCTQnhNZ&where=32.746682,-117.162741&within=10&date=2016020100-2016020200&page_size=50
-    public static String getData(String latitude, String longitude, String distance, String pageSize, int increment) {
+    public static String getData(String latitude, String longitude, String distance, String pageSize, Calendar from, Calendar to) {
         String link = "http://api.eventful.com/json/events/search?app_key=LCXcTmdZsCTQnhNZ" +
                 "&where=" + latitude + "," + longitude +
                 "&within=" + distance +
                 "&page_size=" + pageSize +
-                "&date=" + getEventfulDate() + "00," + getEventfulDateIncrement(increment) + "00";
+                "&date=" + getEventfulDate(from) + "00," + getEventfulDate(to) + "00";
         try {
             URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -136,26 +134,26 @@ public class Eventful {
         return false;
     }
 
-    public static String getEventfulDate() {
+    public static String getEventfulDate(Calendar cal) {
         String result = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
-        result += sdf.format(new Date());
+        result += sdf.format(cal.getTime());
         return result;
     }
 
-    public static String getEventfulDateIncrement(int increment) {
-        String result = "";
-        String current = getEventfulDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
-        Calendar c = Calendar.getInstance();
-        try {
-            c.setTime(sdf.parse(current));
-            c.add(Calendar.DATE, increment);
-            result += sdf.format(c.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
+//    public static String getEventfulDateIncrement(int increment) {
+//        String result = "";
+//        String current = getEventfulDate();
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.US);
+//        Calendar c = Calendar.getInstance();
+//        try {
+//            c.setTime(sdf.parse(current));
+//            c.add(Calendar.DATE, increment);
+//            result += sdf.format(c.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return result;
+//    }
 
 }
