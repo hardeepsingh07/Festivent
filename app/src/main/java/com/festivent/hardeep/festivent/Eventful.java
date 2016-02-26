@@ -1,6 +1,8 @@
 package com.festivent.hardeep.festivent;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,15 +38,17 @@ public class Eventful {
     public static JSONObject data;
     public static ArrayList<EventInfo> eventfulEvents = new ArrayList<EventInfo>();
     public static JSONArray eventfulJSONArray = null;
+    public static Context contxt;
 
 
     //http://api.eventful.com/rest/events/search?app_key=LCXcTmdZsCTQnhNZ&where=32.746682,-117.162741&within=10&date=2016020100-2016020200&page_size=50
-    public static String getData(String latitude, String longitude, String distance, String pageSize, Calendar from, Calendar to) {
+    public static String getData(String latitude, String longitude, String distance, String pageSize, Calendar from, Calendar to, Context context) {
         String link = "http://api.eventful.com/json/events/search?app_key=LCXcTmdZsCTQnhNZ" +
                 "&where=" + latitude + "," + longitude +
                 "&within=" + distance +
                 "&page_size=" + pageSize +
                 "&date=" + getEventfulDate(from) + "00," + getEventfulDate(to) + "00";
+        contxt = context;
         try {
             URL url = new URL(link);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -120,7 +124,12 @@ public class Eventful {
             }
         } catch (final Exception e) {
             Log.e("eventful_error", e.toString());
-            Toast.makeText(context, "Sorry an error have occured. Please try again.", Toast.LENGTH_SHORT).show();
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                public void run() {
+                    Toast.makeText(contxt, "Sorry an error have occured. Couldn't retrive Eventful Events. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         return eventfulEvents;
     }

@@ -280,12 +280,12 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         @Override
         protected Void doInBackground(Void... params) {
             //Get Eventbrite Events
-            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to);
+            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to, Mapss.this);
             eventbriteEvents.clear();
             eventbriteEvents = Eventbrite.getDateArray(Mapss.this, apiData);
 
             //Get Eventful events
-            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to);
+            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to, Mapss.this);
             eventfulEvents.clear();
             eventfulEvents = Eventful.getDataArray(Mapss.this, apiData1);
             return null;
@@ -296,8 +296,8 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             myEvents.clear();
             myEvents.addAll(eventbriteEvents);
             myEvents.addAll(eventfulEvents);
-            pBar.setVisibility(View.GONE);
             plotMarkers();
+            pBar.setVisibility(View.GONE);
             super.onPostExecute(aVoid);
         }
     }

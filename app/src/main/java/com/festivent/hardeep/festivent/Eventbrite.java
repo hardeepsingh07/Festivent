@@ -1,6 +1,8 @@
 package com.festivent.hardeep.festivent;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,10 +39,10 @@ public class Eventbrite {
     public static JSONObject venueData;
     public static ArrayList<EventInfo> eventbriteEvents = new ArrayList<EventInfo>();
     public static JSONArray eventbriteJSONArray = null;
-
+    public static Context contxt;
 
     //Venue ID LINK: https://www.eventbriteapi.com/v3/venues/4615505/?token=PZDYIE3MVNSM5Z6EI3B6
-    public static String getData(String latitude, String longitude, String distance, String page, Calendar from, Calendar to) {
+    public static String getData(String latitude, String longitude, String distance, String page, Calendar from, Calendar to, Context context) {
         String link = "https://www.eventbriteapi.com/v3/events/search/?" +
                 "location.within=" + distance +
                 "&location.latitude=" + latitude +
@@ -49,6 +51,7 @@ public class Eventbrite {
                 "Z&page=" + page +
                 "&start_date.range_end=" + getEventBriteDate(to) +
                 "Z&token=PZDYIE3MVNSM5Z6EI3B6";
+        contxt = context;
         return makeCall(link);
     }
 
@@ -154,7 +157,13 @@ public class Eventbrite {
             }
         } catch (Exception e) {
             Log.e("eventbrite_error", e.toString());
-            Toast.makeText(context, "Sorry an error have occured. Please try again.", Toast.LENGTH_SHORT).show();
+
+            Handler h = new Handler(Looper.getMainLooper());
+            h.post(new Runnable() {
+                public void run() {
+                    Toast.makeText(contxt, "Sorry an error have occured. Couldn't retrive Eventbrite Events. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         return eventbriteEvents;
     }

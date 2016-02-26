@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class List extends AppCompatActivity {
@@ -101,6 +104,7 @@ public class List extends AppCompatActivity {
 
         //execute the parse call
         if(zipcode != null) {
+            Log.e("error", "top" + latitude + " " + longitude + " " + miles);
             new MyTask().execute();
         } else {
             Toast.makeText(List.this, "Cannot find location please try again", Toast.LENGTH_SHORT).show();
@@ -171,6 +175,7 @@ public class List extends AppCompatActivity {
                             Toast.makeText(List.this, "Showing only Eventbrite events", Toast.LENGTH_SHORT).show();
                         }
                         pBar.setVisibility(View.VISIBLE);
+                        sortData();
                         mAdapter.notifyDataSetChanged();
                         pBar.setVisibility(View.INVISIBLE);
                     }
@@ -189,12 +194,12 @@ public class List extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             //Get EventBrite Events
-            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to);
+            String apiData = Eventbrite.getData(latitude + "", longitude + "", miles, "1", from, to, List.this);
             eventbriteEvents.clear();
             eventbriteEvents = Eventbrite.getDateArray(List.this, apiData);
 
             //Get Eventful Events
-            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to);
+            String apiData1 = Eventful.getData(latitude + "", longitude + "", miles, "25", from, to, List.this);
             eventfulEvents.clear();
             eventfulEvents = Eventful.getDataArray(List.this, apiData1);
             return null;
@@ -205,10 +210,20 @@ public class List extends AppCompatActivity {
             myEvents.clear();
             myEvents.addAll(eventbriteEvents);
             myEvents.addAll(eventfulEvents);
-            pBar.setVisibility(View.GONE);
+            sortData();
             mAdapter = new ListAdapter(List.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
+            pBar.setVisibility(View.GONE);
             super.onPostExecute(aVoid);
         }
+    }
+
+    public void sortData() {
+        Collections.sort(myEvents, new Comparator<EventInfo>() {
+            @Override
+            public int compare(EventInfo lhs, EventInfo rhs) {
+                return lhs.getStartDate().compareTo(rhs.getStartDate());
+            }
+        });
     }
 }

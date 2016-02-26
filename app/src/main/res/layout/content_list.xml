@@ -3,16 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_list" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.festivent.hardeep.festivent.List">
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/listview"></ListView>
-
-    <!-- <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" android:text="@string/large_text" />-->
-
+    tools:showIn="@layout/activity_list2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.festivent.hardeep.festivent.List">
 </android.support.v4.widget.NestedScrollView>
