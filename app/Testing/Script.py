@@ -1,3 +1,4 @@
+'''
 # Imports the monkeyrunner modules used by this program
 from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
 
@@ -107,5 +108,5 @@ device.touch(350, 2500, MonkeyDevice.DOWN_AND_UP)
 MonkeyRunner.sleep(2)
 device.touch(350, 2500, MonkeyDevice.DOWN_AND_UP)
 MonkeyRunner.sleep(2)
-
+'''
 
