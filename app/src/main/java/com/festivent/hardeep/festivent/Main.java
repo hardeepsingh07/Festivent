@@ -456,6 +456,7 @@ public class Main extends AppCompatActivity
         dpd.setAccentColor(Color.parseColor("#303F9F"));
         dpd.setTitle("From Date");
         dpd.show(getFragmentManager(), "Datepickerdialog");
+        dpd.vibrate(false);
         if(!dateTrigger) {
             dpd.setMinDate(now);
         } else {
