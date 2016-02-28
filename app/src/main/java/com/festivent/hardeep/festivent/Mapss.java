@@ -66,6 +66,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(Mapss.this);
         markerHash = new HashMap<Marker, EventInfo>();
+        pBar.setVisibility(View.VISIBLE);
 
 
         //get Shared Preferences
@@ -88,20 +89,20 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
 
         //get desired date and settings
         miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
-        String temp = prefs.getString("time", "1 Day");
-        if(temp.endsWith("Day") || temp.endsWith("Days")) {
-            increment = temp.substring(0,1);
-        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
-            increment = temp.substring(0,1);
-            int t = Integer.parseInt(increment);
-            t *= 7;
-            increment = t + "";
-        } else {
-            increment = temp.substring(0,1);
-            int t = Integer.parseInt(increment);
-            t *= 30;
-            increment = t + "";
-        }
+//        String temp = prefs.getString("time", "1 Day");
+//        if(temp.endsWith("Day") || temp.endsWith("Days")) {
+//            increment = temp.substring(0,1);
+//        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
+//            increment = temp.substring(0,1);
+//            int t = Integer.parseInt(increment);
+//            t *= 7;
+//            increment = t + "";
+//        } else {
+//            increment = temp.substring(0,1);
+//            int t = Integer.parseInt(increment);
+//            t *= 30;
+//            increment = t + "";
+//        }
 
         //execute the parse call
         if(zipcode != null) {
@@ -116,6 +117,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pBar.setVisibility(View.VISIBLE);
                 if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
                     gps = new GPS(Mapss.this);
                     gps.showSettingsAlert();
@@ -166,6 +168,7 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
                 latlng = new LatLng(latitude, longitude);
                 location = CameraUpdateFactory.newLatLngZoom(latlng, 12);
                 mMap.setOnMapLoadedCallback(mapLoaded);
+                new MyTask().execute();
                 Run = false;
             }
         }
@@ -180,7 +183,6 @@ public class Mapss extends FragmentActivity implements OnMapReadyCallback {
             //Show events data
             mMap.setOnInfoWindowClickListener(listenClick);
             mMap.animateCamera(location);
-            pBar.setVisibility(View.INVISIBLE);
         }
     };
 

@@ -86,20 +86,20 @@ public class List extends AppCompatActivity {
 
         //get desired date and settings
         miles = prefs.getString("miles", "25 Miles").substring(0,3).trim() + "mi";
-        String temp = prefs.getString("time", "1 Day");
-        if(temp.endsWith("Day") || temp.endsWith("Days")) {
-            increment = temp.substring(0,1);
-        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
-            increment = temp.substring(0,1);
-            int t = Integer.parseInt(increment);
-            t *= 7;
-            increment = t + "";
-        } else {
-            increment = temp.substring(0,1);
-            int t = Integer.parseInt(increment);
-            t *= 30;
-            increment = t + "";
-        }
+//        String temp = prefs.getString("time", "1 Day");
+//        if(temp.endsWith("Day") || temp.endsWith("Days")) {
+//            increment = temp.substring(0,1);
+//        } else if(temp.endsWith("Week") || temp.endsWith("Weeks")) {
+//            increment = temp.substring(0,1);
+//            int t = Integer.parseInt(increment);
+//            t *= 7;
+//            increment = t + "";
+//        } else {
+//            increment = temp.substring(0,1);
+//            int t = Integer.parseInt(increment);
+//            t *= 30;
+//            increment = t + "";
+//        }
 
 
         //execute the parse call
