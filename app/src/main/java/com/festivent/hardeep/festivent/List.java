@@ -175,7 +175,7 @@ public class List extends AppCompatActivity {
                             Toast.makeText(List.this, "Showing only Eventbrite events", Toast.LENGTH_SHORT).show();
                         }
                         pBar.setVisibility(View.VISIBLE);
-                        sortData();
+                        sortData(myEvents);
                         mAdapter.notifyDataSetChanged();
                         pBar.setVisibility(View.INVISIBLE);
                     }
@@ -208,9 +208,10 @@ public class List extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             myEvents.clear();
+            sortData(eventbriteEvents);
             myEvents.addAll(eventbriteEvents);
+            sortData(eventfulEvents);
             myEvents.addAll(eventfulEvents);
-            sortData();
             mAdapter = new ListAdapter(List.this, myEvents, sEvents, true);
             mRecyclerView.setAdapter(mAdapter);
             pBar.setVisibility(View.GONE);
@@ -218,7 +219,7 @@ public class List extends AppCompatActivity {
         }
     }
 
-    public void sortData() {
+    public void sortData(ArrayList<EventInfo> data) {
         Collections.sort(myEvents, new Comparator<EventInfo>() {
             @Override
             public int compare(EventInfo lhs, EventInfo rhs) {

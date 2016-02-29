@@ -68,6 +68,7 @@ public class SavedEvents extends AppCompatActivity {
             }
         } else {
             noEventsMessage.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
         }
     }
 }
