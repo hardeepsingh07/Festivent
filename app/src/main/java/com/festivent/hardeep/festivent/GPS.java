@@ -82,8 +82,7 @@ public class GPS extends Service implements LocationListener {
                     }
                 }
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
         return location;
     }
 
