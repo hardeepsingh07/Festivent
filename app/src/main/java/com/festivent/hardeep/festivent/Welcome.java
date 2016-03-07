@@ -35,6 +35,7 @@ public class Welcome extends AppCompatActivity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if(netInfo != null && netInfo.isConnected()) {
             startActivity(i);
+            finish();
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(Welcome.this);
             dialog.setMessage("Festivent uses internet to retrieve data. Please connect to internet for proper functionality.")
@@ -42,6 +43,7 @@ public class Welcome extends AppCompatActivity {
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startActivity(i);
+                            finish();
                         }
                     });
             AlertDialog alert = dialog.create();
